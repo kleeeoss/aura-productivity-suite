@@ -1,0 +1,103 @@
+/* Themes */
+
+/* Base Glass (Current) */
+[data-theme='glass'] {
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-hover: rgba(255, 255, 255, 0.15);
+  --accent-primary: #6366f1;
+  --accent-secondary: #ec4899;
+  --accent-gradient: linear-gradient(135deg, #6366f1, #ec4899);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+}
+
+/* Ocean */
+[data-theme='ocean'] {
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #082f49 100%);
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(56, 189, 248, 0.2);
+  --glass-hover: rgba(56, 189, 248, 0.15);
+  --accent-primary: #0ea5e9;
+  --accent-secondary: #14b8a6;
+  --accent-gradient: linear-gradient(135deg, #0ea5e9, #14b8a6);
+  --text-primary: #f0f9ff;
+  --text-secondary: #7dd3fc;
+}
+
+/* Midnight */
+[data-theme='midnight'] {
+  --bg-gradient: linear-gradient(135deg, #000000 0%, #111827 100%);
+  --glass-bg: rgba(17, 24, 39, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-hover: rgba(255, 255, 255, 0.1);
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #c084fc;
+  --accent-gradient: linear-gradient(135deg, #8b5cf6, #c084fc);
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+}
+
+/* Sunset */
+[data-theme='sunset'] {
+  --bg-gradient: linear-gradient(135deg, #2c1015 0%, #431407 100%);
+  --glass-bg: rgba(67, 20, 7, 0.7);
+  --glass-border: rgba(251, 146, 60, 0.2);
+  --glass-hover: rgba(251, 146, 60, 0.15);
+  --accent-primary: #f97316;
+  --accent-secondary: #eab308;
+  --accent-gradient: linear-gradient(135deg, #f97316, #eab308);
+  --text-primary: #fffbeb;
+  --text-secondary: #fcd34d;
+}
+
+/* Forest */
+[data-theme='forest'] {
+  --bg-gradient: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+  --glass-bg: rgba(6, 78, 59, 0.7);
+  --glass-border: rgba(52, 211, 153, 0.2);
+  --glass-hover: rgba(52, 211, 153, 0.15);
+  --accent-primary: #10b981;
+  --accent-secondary: #84cc16;
+  --accent-gradient: linear-gradient(135deg, #10b981, #84cc16);
+  --text-primary: #ecfdf5;
+  --text-secondary: #a7f3d0;
+}
+
+/* Minimalist */
+[data-theme='minimalist'] {
+  --bg-gradient: linear-gradient(135deg, #171717 0%, #262626 100%);
+  --glass-bg: rgba(38, 38, 38, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-hover: rgba(255, 255, 255, 0.1);
+  --accent-primary: #d4d4d4;
+  --accent-secondary: #737373;
+  --accent-gradient: linear-gradient(135deg, #d4d4d4, #737373);
+  --text-primary: #fafafa;
+  --text-secondary: #a3a3a3;
+}
+
+/* Light Mode Overrides */
+[data-mode='light'] {
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #ebedee 100%);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-hover: rgba(0, 0, 0, 0.05);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+}
+
+/* Fonts */
+[data-font='inter'] {
+  font-family: 'Inter', sans-serif;
+}
+[data-font='roboto'] {
+  font-family: 'Roboto', sans-serif;
+}
+[data-font='monospace'] {
+  font-family: 'Fira Code', 'Courier New', monospace;
+}
+[data-font='serif'] {
+  font-family: 'Merriweather', serif;
+}

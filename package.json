@@ -1,0 +1,72 @@
+{
+  "name": "aura",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A glassmorphic desktop productivity suite built with React 19, Tauri v2, and Electron.",
+  "author": "AURA Contributors",
+  "license": "MIT",
+  "type": "module",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
+    "dev:electron": "concurrently -k \"npm run dev\" \"npm run electron\"",
+    "dist:web": "npm run build",
+    "dist:electron": "npm run build && electron-builder",
+    "dist:tauri": "tauri build && pwsh -Command \"New-Item -ItemType Directory -Force Builds/Tauri; Copy-Item src-tauri/target/release/bundle/nsis/*.exe Builds/Tauri/ -ErrorAction SilentlyContinue; Copy-Item src-tauri/target/release/app.exe Builds/Tauri/AURA_standalone.exe -ErrorAction SilentlyContinue\"",
+    "dist:all": "npm run dist:web && npm run dist:electron && npm run dist:tauri"
+  },
+  "build": {
+    "appId": "com.aura.app",
+    "productName": "AURA",
+    "directories": {
+      "output": "Builds/Electron"
+    },
+    "files": [
+      "Builds/Web/**/*",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    }
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "date-fns": "^4.4.0",
+    "framer-motion": "^13.0.0",
+    "lucide-react": "^1.29.0",
+    "marked": "^18.0.9",
+    "react": "^19.2.8",
+    "react-calendar": "^6.0.1",
+    "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.10.1",
+    "remark-gfm": "^4.0.1",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/cli": "^2.11.4",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "concurrently": "^10.0.4",
+    "cross-env": "^10.1.0",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "oxlint": "^1.75.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "wait-on": "^9.1.0"
+  }
+}

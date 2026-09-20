@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600&family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
+@import url('./themes.css');
+
+:root {
+  --font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  --sidebar-width: 260px;
+  --animation-duration: 200ms;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden; /* Prevent body scroll in desktop app */
+  transition: background 0.5s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-font="inter"] {
+  --font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+[data-font="roboto"] {
+  --font-family: 'Roboto', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+[data-font="monospace"] {
+  --font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+[data-font="serif"] {
+  --font-family: 'Merriweather', Georgia, serif;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+  transition: all var(--animation-duration) ease;
+}
+
+.glass-panel:hover {
+  background: var(--glass-hover);
+}
+
+.glass-button {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--animation-duration) ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  outline: none;
+}
+
+.glass-button:hover {
+  background: var(--glass-hover);
+  transform: translateY(-2px);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+}
+
+.glass-button.primary {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+}
+
+.glass-button.primary:hover {
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.glass-input {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: all var(--animation-duration) ease;
+  width: 100%;
+}
+
+.glass-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.glass-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.5);
+}
+
+/* App Layout */
+#root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-right: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 10;
+}
+
+.main-content {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 32px;
+  position: relative;
+}
+
+/* Animated Background Shapes (Optional for more premium feel) */
+.bg-shape {
+  position: absolute;
+  filter: blur(100px);
+  z-index: -1;
+  opacity: 0.6;
+  border-radius: 50%;
+  animation: float 20s infinite alternate ease-in-out;
+}
+
+.bg-shape-1 {
+  background: var(--accent-primary);
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+}
+
+.bg-shape-2 {
+  background: var(--accent-secondary);
+  width: 300px;
+  height: 300px;
+  bottom: -50px;
+  right: -50px;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, 50px) scale(1.1); }
+  100% { transform: translate(-50px, 100px) scale(0.9); }
+}
+
+/* Distraction Free Mode specific */
+.focus-mode-active #root .sidebar {
+  transform: translateX(-100%);
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed; /* so it doesn't take up space */
+}
+
+.focus-mode-active #root .main-content {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: padding 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.focus-mode-active body {
+  background: #000000 !important;
+}
+
+.focus-mode-active .bg-shape {
+  opacity: 0.1 !important;
+  filter: blur(150px) !important;
+}
+
+.focus-mode-active .focus-mixer {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.focus-mode-active .main-content:hover .focus-mixer {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Accessibility: Disable Animations */
+html.disable-animations *,
+html.disable-animations *::before,
+html.disable-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Accessibility: Reduce Motion */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
