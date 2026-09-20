@@ -29,12 +29,12 @@
 
 AURA is available as an ultra-lightweight native Windows executable built on **Tauri v2** using native OS WebView2 (under 10 MB bundle size, instant startup, minimal RAM).
 
-👉 **[Download the Latest Windows Release (v1.0.0)](../../releases/latest)**
+👉 **[Download the Latest Windows Release (v1.0.0)](https://github.com/kleeeoss/aura-productivity-suite/releases/latest)**
 
 | Asset | Format | Description |
 | :--- | :--- | :--- |
-| **`AURA_0.1.0_x64-setup.exe`** | NSIS Installer | **Recommended.** Windows installer with desktop and start menu shortcuts. |
-| **`AURA_standalone.exe`** | Portable | Zero-install portable binary. Run directly from anywhere or a USB drive. |
+| **[`AURA_0.1.0_x64-setup.exe`](https://github.com/kleeeoss/aura-productivity-suite/releases/download/v1.0.0/AURA_0.1.0_x64-setup.exe)** | NSIS Installer | **Recommended.** Windows installer with desktop and start menu shortcuts. |
+| **[`AURA_standalone.exe`](https://github.com/kleeeoss/aura-productivity-suite/releases/download/v1.0.0/AURA_standalone.exe)** | Portable | Zero-install portable binary. Run directly from anywhere or a USB drive. |
 
 ---
 
@@ -119,8 +119,8 @@ AURA is configured with a unified 3-tier build matrix allowing it to compile int
 ### Setup
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/AURA.git
-   cd AURA
+   git clone https://github.com/kleeeoss/aura-productivity-suite.git
+   cd aura-productivity-suite
    ```
 
 2. **Install dependencies**:
@@ -159,7 +159,7 @@ npm run dist:all
 
 Contributions, feature suggestions, and bug reports are warmly welcome!
 
-- Found a bug or glitch? Feel free to [open an issue](../../issues).
+- Found a bug or glitch? Feel free to [open an issue](https://github.com/kleeeoss/aura-productivity-suite/issues).
 - Have an idea for a new widget or ambient generator? Start a discussion or submit a Pull Request.
 
 ---

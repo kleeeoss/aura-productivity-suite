@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { GlassPanel } from '../components/GlassPanel';
 import { useFocusStore } from '../store/useFocusStore';
 import { useAppStore } from '../store/useAppStore';
@@ -7,16 +7,6 @@ import { audioEngine } from '../utils/audioEngine';
 import { AudioVisualizer } from '../components/AudioVisualizer';
 import EmbeddedMediaPlayer from '../components/EmbeddedMediaPlayer';
 import { format } from 'date-fns';
-
-const tracks = [
-  { id: 'lofi', label: '🎵 Lo-fi Music', url: '/audio/lofi.mp3', synthetic: false },
-  { id: 'rain', label: '🌧 Rain', synthetic: true },
-  { id: 'coffee', label: '☕ Coffee Shop', synthetic: true },
-  { id: 'fireplace', label: '🔥 Fireplace', synthetic: true },
-  { id: 'ocean', label: '🌊 Ocean', synthetic: true },
-  { id: 'wind', label: '🌬 Wind', synthetic: true },
-  { id: 'keyboard', label: '⌨ Keyboard', synthetic: true },
-];
 
 const noises = [
   { id: 'white', label: 'White Noise' },
@@ -40,23 +30,9 @@ const Focus = () => {
   } = useFocusStore();
   
   const { isFocusModeActive, setFocusMode } = useAppStore();
-  const audioRefs = useRef<{ [key: string]: HTMLAudioElement | null }>({});
 
   useEffect(() => {
     audioEngine.init();
-    
-    tracks.forEach((track) => {
-      if (track.synthetic) {
-        audioEngine.registerSyntheticAmbient(track.id);
-        audioEngine.setSyntheticVolume(track.id, volumes[track.id] || 0);
-      } else {
-        const el = audioRefs.current[track.id];
-        if (el) {
-          audioEngine.registerTrack(track.id, el);
-          audioEngine.setVolume(track.id, volumes[track.id] || 0);
-        }
-      }
-    });
 
     noises.forEach(noise => {
       audioEngine.registerNoise(noise.id);
@@ -66,13 +42,6 @@ const Focus = () => {
   }, []); 
 
   useEffect(() => {
-    tracks.forEach((track) => {
-      if (track.synthetic) {
-        audioEngine.setSyntheticVolume(track.id, volumes[track.id] || 0);
-      } else {
-        audioEngine.setVolume(track.id, volumes[track.id] || 0);
-      }
-    });
     noises.forEach(noise => {
       audioEngine.setNoiseVolume(noise.id, volumes[noise.id] || 0);
     });
@@ -96,19 +65,6 @@ const Focus = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', gap: '24px' }}>
-      
-      {/* Hidden Audio Elements */}
-      <div style={{ display: 'none' }}>
-        {tracks.filter(t => !t.synthetic).map(t => (
-          <audio
-            key={t.id}
-            ref={el => { audioRefs.current[t.id] = el; }}
-            src={t.url}
-            loop
-            crossOrigin="anonymous"
-          />
-        ))}
-      </div>
 
       <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
         

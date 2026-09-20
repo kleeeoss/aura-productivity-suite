@@ -34,7 +34,7 @@
         "nsis",
         "portable"
       ],
-      "icon": "build/icon.png"
+      "icon": "assets/icon.png"
     }
   },
   "dependencies": {
