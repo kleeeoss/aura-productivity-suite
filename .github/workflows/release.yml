@@ -5,13 +5,18 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release Tag (e.g. v1.1.1)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
 
 jobs:
   release:
-    name: Build & Draft Release (Windows)
+    name: Build & Publish Release (Windows)
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
@@ -37,30 +42,138 @@ jobs:
       - name: Verify Version Consistency
         run: npm run verify-version
 
-      - name: Run Test Suite
+      - name: Run Quality Gate Lint
+        run: npm run lint
+
+      - name: Run Quality Gate Test Suite
         run: npm test
 
-      - name: Build Tauri Application & Draft GitHub Release
+      - name: Determine Release Tag
+        id: release-tag
+        shell: pwsh
+        run: |
+          $inputTag = "${{ inputs.tag }}"
+          if ($inputTag) {
+            $tag = $inputTag
+          } elseif ($env:GITHUB_REF_TYPE -eq 'tag') {
+            $tag = $env:GITHUB_REF_NAME
+          } else {
+            $pkgVersion = (Get-Content package.json | ConvertFrom-Json).version
+            $tag = "v$pkgVersion"
+          }
+          Write-Host "Determined release tag: $tag"
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+
+      - name: Validate & Read Manual Release Notes
+        id: release-notes
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.release-tag.outputs.tag }}"
+          $notesPath = "release-notes/$tag.md"
+          if (-not (Test-Path $notesPath)) {
+            throw "Validation failed: Manual release notes file not found at '$notesPath'. Releases must have versioned notes authored in release-notes/<tag>.md."
+          }
+          Write-Host "Found versioned manual release notes at: $notesPath"
+          $notesContent = Get-Content -Path $notesPath -Raw -Encoding utf8
+          $eof = [System.Guid]::NewGuid().ToString()
+          "notes<<$eof`n$notesContent`n$eof" >> $env:GITHUB_OUTPUT
+
+      - name: Build Tauri Application & Create Release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'AURA v__VERSION__'
-          releaseBody: 'Welcome to AURA v__VERSION__! Explore the release assets below for the Windows installer (.exe) and standalone binaries.'
-          releaseDraft: true
+          tagName: ${{ steps.release-tag.outputs.tag }}
+          releaseName: 'AURA ${{ steps.release-tag.outputs.tag }}'
+          releaseBody: ${{ steps.release-notes.outputs.notes }}
+          releaseDraft: false
           prerelease: false
 
-      - name: Upload Standalone Binary to Draft Release
+      - name: Publish Release Assets & Manual Notes
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if (Test-Path "src-tauri/target/release/app.exe") {
-            Copy-Item "src-tauri/target/release/app.exe" "AURA_standalone.exe"
-            gh release upload ${{ github.ref_name }} "AURA_standalone.exe" --clobber
+          $tag = "${{ steps.release-tag.outputs.tag }}"
+          $notesPath = "release-notes/$tag.md"
+          Write-Host "Publishing release assets and manual notes for tag: $tag"
+
+          # 1. Ensure release exists and strictly uses versioned manual notes
+          if (-not (Test-Path $notesPath)) {
+            throw "Manual release notes file not found at '$notesPath'!"
           }
+
+          $releaseCheck = (gh release view $tag 2>&1)
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Release $tag not found. Creating public release with manual notes..."
+            gh release create $tag --title "AURA $tag" --notes-file $notesPath --draft=false
+          } else {
+            Write-Host "Applying manual notes to existing release $tag..."
+            gh release edit $tag --title "AURA $tag" --notes-file $notesPath --draft=false
+          }
+
+          # 2. Prepare standalone binary and upload
+          $standaloneSrc = if (Test-Path "src-tauri/target/release/app.exe") {
+            "src-tauri/target/release/app.exe"
+          } elseif (Test-Path "src-tauri/target/release/AURA.exe") {
+            "src-tauri/target/release/AURA.exe"
+          } else {
+            $null
+          }
+
+          if ($standaloneSrc) {
+            Copy-Item $standaloneSrc "AURA_standalone.exe" -Force
+            gh release upload $tag "AURA_standalone.exe" --clobber
+            Write-Host "Uploaded AURA_standalone.exe"
+          } else {
+            Write-Warning "No standalone executable found to upload!"
+          }
+
+          # 3. Ensure NSIS installer .exe files are uploaded
+          if (Test-Path "src-tauri/target/release/bundle/nsis") {
+            Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*.exe" -Recurse | ForEach-Object {
+              gh release upload $tag $_.FullName --clobber
+              Write-Host "Uploaded installer: $($_.Name)"
+            }
+          }
+
+          # 4. Guarantee release is published publicly (draft = false)
+          gh release edit $tag --draft=false
+          Write-Host "Successfully published release $tag with manually authored notes."
+
+      - name: Verify Public GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ steps.release-tag.outputs.tag }}"
+          Write-Host "Verifying release $tag is public and complete..."
+
+          # Fetch release details via gh CLI
+          $releaseJson = gh release view $tag --json tagName,isDraft,isPrerelease,body,assets | ConvertFrom-Json
+
+          if ($releaseJson.isDraft) {
+            throw "Validation failed: Release $tag is marked as draft!"
+          }
+          if (-not $releaseJson.body -or $releaseJson.body.Trim().Length -eq 0) {
+            throw "Validation failed: Release $tag has empty release notes!"
+          }
+
+          $assetNames = $releaseJson.assets | Select-Object -ExpandProperty name
+          Write-Host "Confirmed assets on release $tag: $($assetNames -join ', ')"
+
+          $hasStandalone = $assetNames | Where-Object { $_ -eq "AURA_standalone.exe" }
+          $hasSetup = $assetNames | Where-Object { $_ -like "*setup*.exe" -or $_ -like "AURA_*.exe" }
+
+          if (-not $hasStandalone) {
+            throw "Validation failed: AURA_standalone.exe was not attached to release $tag!"
+          }
+          if (-not $hasSetup) {
+            throw "Validation failed: NSIS setup installer was not attached to release $tag!"
+          }
+
+          Write-Host "✅ Verified: GitHub Release $tag is public, has manual notes, and includes all Windows .exe assets."
 
       - name: Upload Windows Desktop Artifacts
         uses: actions/upload-artifact@v4
@@ -69,4 +182,3 @@ jobs:
           path: |
             src-tauri/target/release/app.exe
             src-tauri/target/release/bundle/nsis/*.exe
-

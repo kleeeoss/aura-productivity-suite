@@ -11,6 +11,8 @@ import { AudioVisualizer } from '../components/AudioVisualizer';
 import EmbeddedMediaPlayer from '../components/EmbeddedMediaPlayer';
 import { SpaceSwitcher } from '../components/SpaceSwitcher';
 import { format } from 'date-fns';
+import { useSettingsStore } from '../store/useSettingsStore';
+import { renderThemeTelemetry } from '../utils/multiverseTheme';
 
 const noises = [
   { id: 'white', label: 'White Noise' },
@@ -35,8 +37,12 @@ const Focus = () => {
     setActiveTaskId,
     completionPrompt,
     dismissCompletionPrompt,
+    workDuration,
+    breakDuration,
+    longBreakDuration,
   } = useFocusStore();
   
+  const { theme } = useSettingsStore();
   const { isFocusModeActive, setFocusMode } = useAppStore();
   const { tasks, updateTask } = useTaskStore();
   const { appendReflection } = useJournalStore();
@@ -46,6 +52,10 @@ const Focus = () => {
 
   const activeTasks = tasks.filter(t => t.status !== 'done');
   const linkedTask = tasks.find(t => t.id === activeTaskId);
+
+  const totalDuration = ((mode === 'work' ? workDuration : mode === 'shortBreak' ? breakDuration : longBreakDuration) || 25) * 60;
+  const progressPercent = totalDuration > 0 ? ((totalDuration - timeLeft) / totalDuration) * 100 : 0;
+  const telemetry = renderThemeTelemetry(progressPercent, theme);
 
   useEffect(() => {
     audioEngine.init();
@@ -213,8 +223,64 @@ const Focus = () => {
             </div>
           )}
 
-          <div style={{ fontSize: '5rem', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '-2px', marginBottom: '24px' }}>
+          <div style={{ fontSize: '5rem', fontWeight: 'bold', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '-2px', marginBottom: '12px' }}>
             {formatTime(timeLeft)}
+          </div>
+
+          {/* Multiverse Telemetry Indicator */}
+          <div style={{ width: '100%', maxWidth: '340px', marginBottom: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {telemetry.type === 'ascii' && (
+              <div style={{ fontFamily: 'var(--font-mono, monospace)', color: 'var(--accent-primary)', fontSize: '1.15rem', letterSpacing: '2px', fontWeight: 'bold' }}>
+                {telemetry.rendered}
+              </div>
+            )}
+            {telemetry.type === 'segmented' && (
+              <div style={{ display: 'flex', gap: '4px', width: '100%', justifyContent: 'center' }}>
+                {Array.from({ length: telemetry.segmentsTotal || 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      flex: 1,
+                      height: '10px',
+                      background: i < (telemetry.segmentsActive || 0) ? 'var(--accent-primary)' : 'rgba(0,0,0,0.15)',
+                      border: '2px solid var(--border-color)',
+                      borderRadius: '1px',
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            {telemetry.type === '8bit' && (
+              <div style={{ fontFamily: 'var(--font-mono, monospace)', color: 'var(--accent-primary)', fontSize: '0.85rem' }}>
+                {telemetry.rendered}
+              </div>
+            )}
+            {telemetry.type === 'caliper' && (
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono, monospace)', fontSize: '0.75rem', color: 'var(--accent-primary)' }}>
+                  <span>├ 000</span>
+                  <span>{telemetry.rendered}</span>
+                  <span>100 ┤</span>
+                </div>
+                <div style={{ height: '4px', width: '100%', background: 'rgba(2, 132, 199, 0.2)', position: 'relative' }}>
+                  <div style={{ height: '100%', width: `${telemetry.percent}%`, background: 'var(--accent-primary)', transition: 'width 0.2s linear' }} />
+                </div>
+              </div>
+            )}
+            {(telemetry.type === 'hud-arc' || telemetry.type === 'laser-ring' || telemetry.type === 'ink-sweep' || telemetry.type === 'water-ripple') && (
+              <div style={{ width: '100%', height: telemetry.type === 'laser-ring' ? '2px' : '6px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '999px', overflow: 'hidden', position: 'relative' }}>
+                <div
+                  style={{
+                    height: '100%',
+                    width: `${telemetry.percent}%`,
+                    background: 'var(--accent-gradient, var(--accent-primary))',
+                    borderRadius: '999px',
+                    transition: 'width var(--motion-duration) var(--motion-timing)',
+                    boxShadow: telemetry.type === 'laser-ring' ? '0 0 10px var(--accent-primary)' : 'none',
+                  }}
+                />
+              </div>
+            )}
           </div>
           
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '24px' }}>

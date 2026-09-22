@@ -6,8 +6,9 @@ import { useTaskStore } from '../store/useTaskStore';
 import { useNoteStore } from '../store/useNoteStore';
 import { useHabitStore } from '../store/useHabitStore';
 import { useJournalStore } from '../store/useJournalStore';
-import { Search, Home, CheckSquare, Clock, FileText, BarChart2, Settings, Moon, Play, Pause, Edit3, Target, BookOpen, Sparkles } from 'lucide-react';
+import { Search, Home, CheckSquare, Clock, FileText, BarChart2, Settings, Moon, Play, Pause, Edit3, Target, BookOpen, Sparkles, Layers } from 'lucide-react';
 import { GlassPanel } from './GlassPanel';
+import { THEME_WORLDS, type ThemeWorldId } from '../utils/multiverseTheme';
 
 interface Command {
   id: string;
@@ -25,7 +26,7 @@ export const CommandPalette = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { setActiveTab } = useAppStore();
-  const { mode, setMode, focusSpaces, setActiveSpace } = useSettingsStore();
+  const { mode, setMode, focusSpaces, setActiveSpace, setTheme } = useSettingsStore();
   const { isActive, setIsActive } = useFocusStore();
   const { tasks } = useTaskStore();
   const { notes, setActiveNote } = useNoteStore();
@@ -98,7 +99,19 @@ export const CommandPalette = () => {
     type: 'action',
   }));
 
-  const allCommands = [...baseCommands, ...spaceCommands, ...taskCommands, ...noteCommands, ...habitCommands, ...journalCommands];
+  const themeCommands: Command[] = (Object.keys(THEME_WORLDS) as ThemeWorldId[]).map((worldId) => {
+    const world = THEME_WORLDS[worldId];
+    return {
+      id: `theme-world-${worldId}`,
+      name: `Theme World: ${world.name}`,
+      icon: <Layers size={18} />,
+      action: () => setTheme(worldId),
+      keywords: [world.name, world.subtitle, 'theme', 'world', 'multiverse', worldId],
+      type: 'action',
+    };
+  });
+
+  const allCommands = [...baseCommands, ...themeCommands, ...spaceCommands, ...taskCommands, ...noteCommands, ...habitCommands, ...journalCommands];
 
   const filteredCommands = allCommands.filter(cmd => 
     cmd.name.toLowerCase().includes(query.toLowerCase()) || 

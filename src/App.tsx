@@ -6,6 +6,7 @@ import { useAppStore } from './store/useAppStore';
 import { useSettingsStore } from './store/useSettingsStore';
 import { useTimer } from './hooks/useTimer';
 import { AnimatePresence, motion } from 'framer-motion';
+import { getThemeWorld } from './utils/multiverseTheme';
 
 import Dashboard from './views/Dashboard';
 import Focus from './views/Focus';
@@ -50,8 +51,19 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-mode', mode);
-    document.documentElement.setAttribute('data-font', font);
-    document.documentElement.style.setProperty('--accent-primary', accentColor);
+    if (font === 'theme') {
+      document.documentElement.removeAttribute('data-font');
+    } else {
+      document.documentElement.setAttribute('data-font', font);
+    }
+
+    const activeWorld = getThemeWorld(theme);
+    const activeAccent = accentColor || activeWorld.palette.accentPrimary;
+    document.documentElement.style.setProperty('--accent-primary', activeAccent);
+    document.documentElement.style.setProperty(
+      '--accent-gradient',
+      `linear-gradient(135deg, ${activeAccent}, ${activeWorld.palette.accentSecondary})`
+    );
     
     // Apply UI Scaling
     const scale = uiScale / 100;
@@ -92,10 +104,20 @@ function App() {
     }
   };
 
+  const activeWorld = getThemeWorld(theme);
+  const showBgShapes = activeWorld.id === 'translucent-cockpit' || activeWorld.id === 'zen-botanical';
+
   return (
-    <div className={isFocusModeActive ? 'focus-mode-active' : ''} style={{ width: '100%', height: '100%', display: 'flex' }}>
-      <div className="bg-shape bg-shape-1" />
-      <div className="bg-shape bg-shape-2" />
+    <div 
+      className={`${isFocusModeActive ? 'focus-mode-active' : ''} ${activeWorld.surfaces.textureClass}`} 
+      style={{ width: '100%', height: '100%', display: 'flex', position: 'relative' }}
+    >
+      {showBgShapes && (
+        <>
+          <div className="bg-shape bg-shape-1" />
+          <div className="bg-shape bg-shape-2" />
+        </>
+      )}
       
       <Sidebar />
       <div className="main-content">

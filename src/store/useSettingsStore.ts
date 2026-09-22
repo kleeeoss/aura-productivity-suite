@@ -2,10 +2,25 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useFocusStore } from './useFocusStore';
 import { audioEngine } from '../utils/audioEngine';
+import { getThemeWorld } from '../utils/multiverseTheme';
 
-export type AppTheme = 'glass' | 'ocean' | 'midnight' | 'sunset' | 'forest' | 'minimalist';
+export type AppTheme =
+  | 'translucent-cockpit'
+  | 'cyber-cli'
+  | 'neo-brutalist'
+  | 'editorial-broadsheet'
+  | 'technical-blueprint'
+  | '8bit-arcade'
+  | 'obsidian-monolith'
+  | 'zen-botanical'
+  | 'glass'
+  | 'ocean'
+  | 'midnight'
+  | 'sunset'
+  | 'forest'
+  | 'minimalist';
 export type AppMode = 'light' | 'dark' | 'auto';
-export type FontStyle = 'inter' | 'roboto' | 'monospace' | 'serif';
+export type FontStyle = 'theme' | 'inter' | 'roboto' | 'monospace' | 'serif';
 export type TempUnit = 'celsius' | 'fahrenheit';
 
 export interface FocusSpace {
@@ -135,9 +150,9 @@ export const useSettingsStore = create<SettingsState>()(
     (set, get) => ({
       theme: 'glass',
       mode: 'dark',
-      font: 'inter',
+      font: 'theme',
       tempUnit: 'fahrenheit',
-      accentColor: '#3b82f6',
+      accentColor: '#6366f1',
       disableAnimations: false,
       reduceMotion: false,
       defaultPomodoroLength: 25,
@@ -237,7 +252,13 @@ export const useSettingsStore = create<SettingsState>()(
         });
       },
 
-      setTheme: (theme) => set({ theme }),
+      setTheme: (theme) => {
+        const world = getThemeWorld(theme);
+        set({
+          theme,
+          accentColor: world.palette.accentPrimary,
+        });
+      },
       setMode: (mode) => set({ mode }),
       setFont: (font) => set({ font }),
       setTempUnit: (tempUnit) => set({ tempUnit }),
@@ -268,9 +289,15 @@ export const useSettingsStore = create<SettingsState>()(
           ...DEFAULT_DASHBOARD_WIDGETS.filter((w) => !savedWidgetIds.has(w.id)),
         ];
 
+        // Migrate font if user hasn't explicitly set a custom font override
+        const resolvedFont = persistedState?.font === 'inter' && !persistedState?._customFontSet
+          ? 'theme'
+          : (persistedState?.font || 'theme');
+
         return {
           ...currentState,
           ...persistedState,
+          font: resolvedFont,
           focusSpaces: mergedSpaces,
           dashboardWidgets: mergedWidgets,
         };

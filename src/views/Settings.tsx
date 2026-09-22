@@ -1,10 +1,11 @@
 import { useSettingsStore, type AppTheme, type FontStyle } from '../store/useSettingsStore';
 import { useAppStore } from '../store/useAppStore';
 import { GlassPanel } from '../components/GlassPanel';
-import { Settings as SettingsIcon, Palette, Type, Moon, Thermometer, Database, Download, Upload, User, Trash2, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
-import React, { useRef } from 'react';
+import { Settings as SettingsIcon, Type, Moon, Thermometer, Database, Download, Upload, User, Trash2, Clock, RotateCcw, AlertTriangle, Layers, Sparkles } from 'lucide-react';
+import React, { useRef, useState } from 'react';
 import { useToast } from '../contexts/ToastContext';
 import { validateBackupData } from '../utils/productivityMath';
+import { THEME_WORLDS, getThemeWorld, renderThemeTelemetry, type ThemeWorldId } from '../utils/multiverseTheme';
 
 const Settings = () => {
   const { 
@@ -17,6 +18,8 @@ const Settings = () => {
   const { userName, avatar, setUserName, setAvatar } = useAppStore();
   const { toast } = useToast();
   
+  const [previewProgress, setPreviewProgress] = useState(65);
+  const activeWorld = getThemeWorld(theme);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,6 +53,7 @@ const Settings = () => {
   ];
 
   const fonts: { value: FontStyle; label: string }[] = [
+    { value: 'theme', label: 'Theme Default (Multiverse)' },
     { value: 'inter', label: 'Inter (Sans-serif)' },
     { value: 'roboto', label: 'Roboto' },
     { value: 'monospace', label: 'Fira Code (Monospace)' },
@@ -185,29 +189,186 @@ const Settings = () => {
           </div>
         </GlassPanel>
 
-        {/* Appearance Settings */}
+        {/* AURA Multiverse Visual Engine */}
         <GlassPanel>
-          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <Palette size={24} /> Appearance
-          </h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>App Theme</label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {themes.map((t) => (
-                  <button
-                    key={t.value}
-                    onClick={() => setTheme(t.value)}
-                    className={`glass-button ${theme === t.value ? 'primary' : ''}`}
-                    style={{ flex: '1 1 calc(33% - 8px)', justifyContent: 'center' }}
-                  >
-                    {t.label}
-                  </button>
-                ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <Layers size={24} /> Multiverse Visual Engine
+            </h2>
+            <span style={{ fontSize: '0.8rem', color: 'var(--accent-primary)', border: '1px solid var(--border-color)', padding: '2px 8px', borderRadius: '4px', fontFamily: 'var(--font-mono)' }}>
+              10 Orthogonal Dimensions Active
+            </span>
+          </div>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '0.9rem' }}>
+            Every theme is a cohesive architectural world structured across 10 design dimensions — typography hierarchy, silhouette geometry, tactile shadows, surfaces, and telemetry.
+          </p>
+
+          <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600' }}>
+            Canonical Theme Worlds
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+            {(Object.keys(THEME_WORLDS) as ThemeWorldId[]).map((id) => {
+              const world = THEME_WORLDS[id];
+              const isSelected = theme === id;
+              return (
+                <div
+                  key={id}
+                  onClick={() => setTheme(id)}
+                  style={{
+                    padding: '14px',
+                    borderRadius: world.shapes.radiusSm,
+                    border: isSelected ? '2px solid var(--accent-primary)' : '1px solid var(--border-color)',
+                    background: isSelected ? 'var(--glass-hover)' : 'var(--glass-bg)',
+                    boxShadow: isSelected ? 'var(--glass-shadow)' : 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{world.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{world.subtitle}</div>
+                    </div>
+                    {isSelected && (
+                      <span style={{ fontSize: '0.7rem', background: 'var(--accent-primary)', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>
+                        ACTIVE
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.3' }}>
+                    {world.concept}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 10-Dimension Live Inspector Specimen */}
+          <div style={{ background: 'var(--glass-bg)', borderRadius: 'var(--shape-radius-sm)', border: '1px solid var(--border-color)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Sparkles size={16} color="var(--accent-primary)" /> 10-Dimension Visual Matrix Specimen
+              </h3>
+              <span style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                World: <strong>{activeWorld.name}</strong>
+              </span>
+            </div>
+
+            {/* Typography Specimen */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px', background: 'rgba(0,0,0,0.1)', padding: '12px', borderRadius: '6px' }}>
+              <div>
+                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>1. Display Font</span>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 'bold' }}>AURA Cockpit</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>2. Body Font</span>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem' }}>Flow-state focus suite</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>3. Data / Mono</span>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--accent-primary)' }}>25:00 ┼ 100%</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>4. Accent Kicker</span>
+                <div style={{ fontFamily: 'var(--font-accent)', fontSize: '0.8rem', textTransform: 'uppercase' }}>TURBO FOCUS</div>
               </div>
             </div>
 
+            {/* Silhouette & Tactile Specimen */}
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                Radius: <code>{activeWorld.shapes.radius}</code> | Linework: <code>{activeWorld.linework.borderWidth} {activeWorld.linework.borderStyle}</code> | Blur: <code>{activeWorld.surfaces.blur}</code>
+              </div>
+              <button className="glass-button primary" style={{ padding: '6px 14px', fontSize: '0.85rem' }}>
+                Tactile Specimen Button
+              </button>
+            </div>
+
+            {/* Live Telemetry Progress Specimen */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '6px' }}>
+                <span>Dimension 10: Telemetry Progress ({activeWorld.telemetry.style})</span>
+                <span style={{ fontFamily: 'var(--font-mono)' }}>{previewProgress}%</span>
+              </div>
+              
+              <div style={{ padding: '10px 14px', background: 'rgba(0,0,0,0.15)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {(() => {
+                  const sampleTelemetry = renderThemeTelemetry(previewProgress, theme);
+                  if (sampleTelemetry.type === 'ascii') {
+                    return <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', fontSize: '1.1rem' }}>{sampleTelemetry.rendered}</div>;
+                  }
+                  if (sampleTelemetry.type === 'segmented') {
+                    return (
+                      <div style={{ display: 'flex', gap: '4px', width: '100%' }}>
+                        {Array.from({ length: 10 }).map((_, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              flex: 1,
+                              height: '10px',
+                              background: i < (sampleTelemetry.segmentsActive || 0) ? 'var(--accent-primary)' : 'rgba(0,0,0,0.2)',
+                              border: '2px solid var(--border-color)',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    );
+                  }
+                  if (sampleTelemetry.type === '8bit') {
+                    return <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', fontSize: '0.9rem' }}>{sampleTelemetry.rendered}</div>;
+                  }
+                  if (sampleTelemetry.type === 'caliper') {
+                    return (
+                      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--accent-primary)' }}>
+                          <span>├ CAL-000</span>
+                          <span>{sampleTelemetry.rendered}</span>
+                          <span>CAL-100 ┤</span>
+                        </div>
+                        <div style={{ height: '4px', width: '100%', background: 'rgba(2,132,199,0.2)' }}>
+                          <div style={{ height: '100%', width: `${sampleTelemetry.percent}%`, background: 'var(--accent-primary)' }} />
+                        </div>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '999px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${sampleTelemetry.percent}%`, background: 'var(--accent-gradient, var(--accent-primary))', borderRadius: '999px' }} />
+                    </div>
+                  );
+                })()}
+              </div>
+
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={previewProgress}
+                onChange={(e) => setPreviewProgress(Number(e.target.value))}
+                style={{ width: '100%', marginTop: '8px' }}
+              />
+            </div>
+          </div>
+
+          <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Legacy Color Palettes</label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
+            {themes.map((t) => (
+              <button
+                key={t.value}
+                onClick={() => setTheme(t.value)}
+                className={`glass-button ${theme === t.value ? 'primary' : ''}`}
+                style={{ flex: '1 1 calc(33% - 8px)', justifyContent: 'center' }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}><Moon size={16} style={{ display: 'inline', verticalAlign: 'middle' }}/> App Mode</label>
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -217,7 +378,17 @@ const Settings = () => {
             </div>
 
             <div style={{ gridColumn: '1 / -1' }}>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Accent Color</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label style={{ margin: 0, color: 'var(--text-secondary)' }}>Accent Color</label>
+                {accentColor !== activeWorld.palette.accentPrimary && (
+                  <button
+                    onClick={() => setAccentColor(activeWorld.palette.accentPrimary)}
+                    style={{ background: 'transparent', border: 'none', color: 'var(--accent-primary)', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline' }}
+                  >
+                    Reset to {activeWorld.name} Accent
+                  </button>
+                )}
+              </div>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 {['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#10b981', '#14b8a6'].map(color => (
                   <button 

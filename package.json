@@ -1,7 +1,7 @@
 {
   "name": "aura",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A glassmorphic desktop productivity suite built with React 19, Tauri v2, and Electron.",
   "author": "AURA Contributors",
   "license": "MIT",

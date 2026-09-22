@@ -17,8 +17,8 @@ export const Sidebar = () => {
 
   return (
     <div className="sidebar">
-      <div style={{ padding: '20px 0', fontSize: '1.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'var(--font-family)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '12px', background: 'var(--accent-gradient)', color: 'white' }}>
+      <div style={{ padding: '20px 0', fontSize: '1.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'var(--font-display, var(--font-family))' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: 'var(--shape-radius-sm, 12px)', background: 'var(--accent-gradient)', color: 'white' }}>
           <Hexagon size={24} fill="currentColor" />
         </div>
         <span style={{ letterSpacing: '2px' }}>AURA</span>
@@ -32,7 +32,7 @@ export const Sidebar = () => {
             <button
               key={item.id}
               className={`glass-button ${isActive ? 'primary' : ''}`}
-              style={{ width: '100%', justifyContent: 'flex-start', padding: '12px 16px', border: isActive ? 'none' : '' }}
+              style={{ width: '100%', justifyContent: 'flex-start', padding: '12px 16px' }}
               onClick={() => setActiveTab(item.id as Tab)}
             >
               <Icon size={20} />
@@ -42,9 +42,9 @@ export const Sidebar = () => {
         })}
       </div>
 
-      <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', cursor: 'pointer' }} onClick={() => setActiveTab('settings')}>
+      <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: 'var(--shape-radius, 16px)', cursor: 'pointer' }} onClick={() => setActiveTab('settings')}>
         <div style={{ 
-          width: '40px', height: '40px', borderRadius: '20px', 
+          width: '40px', height: '40px', borderRadius: '9999px', 
           background: avatar ? `url(${avatar}) center/cover` : 'var(--accent-gradient)', 
           display: 'flex', alignItems: 'center', justifyContent: 'center', 
           fontWeight: 'bold', color: '#fff', fontSize: '1.2rem'
