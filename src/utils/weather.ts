@@ -39,7 +39,7 @@ export const fetchWeather = async (tempUnit: 'celsius' | 'fahrenheit'): Promise<
         longitude = parseFloat(geoData.longitude);
         city = geoData.city || 'Your Location';
       }
-    } catch (_e) {
+    } catch {
       console.warn("IP Geolocation failed or timed out, using default location.");
     }
 

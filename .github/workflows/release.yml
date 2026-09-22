@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -49,3 +50,14 @@ jobs:
           releaseBody: 'Welcome to AURA v__VERSION__! Explore the release assets below for the Windows installer (.exe) and standalone binaries.'
           releaseDraft: true
           prerelease: false
+
+      - name: Upload Standalone Binary to Draft Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if (Test-Path "src-tauri/target/release/app.exe") {
+            Copy-Item "src-tauri/target/release/app.exe" "AURA_standalone.exe"
+            gh release upload ${{ github.ref_name }} "AURA_standalone.exe" --clobber
+          }
+

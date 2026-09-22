@@ -25,7 +25,7 @@ const EmbeddedMediaPlayer: React.FC = () => {
 
     try {
       // YouTube Parsing
-      const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+      const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i;
       const ytMatch = url.match(ytRegex);
       if (ytMatch && ytMatch[1]) {
         setEmbedUrl(`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0`);
