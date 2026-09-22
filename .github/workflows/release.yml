@@ -160,20 +160,20 @@ jobs:
             throw "Validation failed: Release $tag has empty release notes!"
           }
 
-          $assetNames = $releaseJson.assets | Select-Object -ExpandProperty name
-          Write-Host "Confirmed assets on release $tag: $($assetNames -join ', ')"
+          $assetNames = @($releaseJson.assets | Select-Object -ExpandProperty name)
+          Write-Host "Confirmed assets on release ${tag}: $($assetNames -join ', ')"
 
           $hasStandalone = $assetNames | Where-Object { $_ -eq "AURA_standalone.exe" }
-          $hasSetup = $assetNames | Where-Object { $_ -like "*setup*.exe" -or $_ -like "AURA_*.exe" }
+          $hasSetup = $assetNames | Where-Object { $_ -like "*setup*.exe" -or ($_ -like "AURA_*.exe" -and $_ -ne "AURA_standalone.exe") }
 
           if (-not $hasStandalone) {
-            throw "Validation failed: AURA_standalone.exe was not attached to release $tag!"
+            throw "Validation failed: AURA_standalone.exe was not attached to release ${tag}!"
           }
           if (-not $hasSetup) {
-            throw "Validation failed: NSIS setup installer was not attached to release $tag!"
+            throw "Validation failed: NSIS setup installer was not attached to release ${tag}!"
           }
 
-          Write-Host "✅ Verified: GitHub Release $tag is public, has manual notes, and includes all Windows .exe assets."
+          Write-Host "Verified: GitHub Release ${tag} is public, has manual notes, and includes all Windows .exe assets."
 
       - name: Upload Windows Desktop Artifacts
         uses: actions/upload-artifact@v4
