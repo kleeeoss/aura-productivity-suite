@@ -18,10 +18,34 @@ import Settings from './views/Settings';
 
 function App() {
   const { isFocusModeActive, activeTab } = useAppStore();
-  const { theme, mode, font, accentColor, disableAnimations, reduceMotion, uiScale } = useSettingsStore();
+  const { theme, mode, font, accentColor, disableAnimations, reduceMotion, uiScale, focusSpaces, setActiveSpace } = useSettingsStore();
   
   // Mount global timer
   useTimer();
+
+  // Global shortcuts for Focus Spaces (Ctrl+1, Ctrl+2, Ctrl+3)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        return;
+      }
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '1' && focusSpaces[0]) {
+          e.preventDefault();
+          setActiveSpace(focusSpaces[0].id);
+        } else if (e.key === '2' && focusSpaces[1]) {
+          e.preventDefault();
+          setActiveSpace(focusSpaces[1].id);
+        } else if (e.key === '3' && focusSpaces[2]) {
+          e.preventDefault();
+          setActiveSpace(focusSpaces[2].id);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [focusSpaces, setActiveSpace]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);

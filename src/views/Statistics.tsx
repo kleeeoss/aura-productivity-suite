@@ -3,68 +3,55 @@ import { GlassPanel } from '../components/GlassPanel';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 import { useFocusStore } from '../store/useFocusStore';
 import { useTaskStore } from '../store/useTaskStore';
-
-// Mock data for trends
-const mockWeeklyData = [
-  { name: 'Mon', pomodoros: 4, tasks: 5, focusTime: 100 },
-  { name: 'Tue', pomodoros: 6, tasks: 7, focusTime: 150 },
-  { name: 'Wed', pomodoros: 3, tasks: 2, focusTime: 75 },
-  { name: 'Thu', pomodoros: 8, tasks: 8, focusTime: 200 },
-  { name: 'Fri', pomodoros: 5, tasks: 4, focusTime: 125 },
-  { name: 'Sat', pomodoros: 2, tasks: 1, focusTime: 50 },
-  { name: 'Sun', pomodoros: 7, tasks: 6, focusTime: 175 },
-];
-
-// Generate mock heatmap data for the last 90 days
-const generateHeatmapData = () => {
-  const data = [];
-  const today = new Date();
-  for (let i = 89; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    // Randomly assign between 0 and 10 pomodoros
-    data.push({
-      date: date.toISOString().split('T')[0],
-      count: Math.floor(Math.random() * 8)
-    });
-  }
-  return data;
-};
-const heatmapData = generateHeatmapData();
+import { useHabitStore } from '../store/useHabitStore';
+import { getTrendData, getHeatmapData, getCategoryDistribution } from '../utils/statisticsAggregator';
 
 const getHeatmapColor = (count: number) => {
   if (count === 0) return 'rgba(255, 255, 255, 0.05)';
-  if (count < 3) return 'rgba(99, 102, 241, 0.4)';
-  if (count < 6) return 'rgba(99, 102, 241, 0.7)';
+  if (count < 3) return 'rgba(99, 102, 241, 0.35)';
+  if (count < 6) return 'rgba(99, 102, 241, 0.65)';
   return 'rgba(99, 102, 241, 1)';
 };
 
+const CATEGORY_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+
 const Statistics = () => {
-  const { pomodorosCompletedToday } = useFocusStore();
+  const { pomodorosCompletedToday, sessionHistory, dailyFocusHours, totalFocusTime } = useFocusStore();
   const { tasks } = useTaskStore();
+  const { habits } = useHabitStore();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'year'>('week');
   
   const completedTasks = tasks.filter(t => t.status === 'done').length;
   
-  const pieData = [
+  const activeChartData = useMemo(() => {
+    return getTrendData(sessionHistory, tasks, timeRange);
+  }, [sessionHistory, tasks, timeRange]);
+
+  const heatmapData = useMemo(() => {
+    const habitDates = habits.flatMap(h => h.completedDates);
+    const taskDates = tasks
+      .filter(t => t.status === 'done' && t.completedAt)
+      .map(t => t.completedAt as string);
+
+    return getHeatmapData(dailyFocusHours, habitDates, taskDates);
+  }, [dailyFocusHours, habits, tasks]);
+
+  const categoryData = useMemo(() => {
+    return getCategoryDistribution(sessionHistory);
+  }, [sessionHistory]);
+
+  const pieData = useMemo(() => [
     { name: 'To Do', value: tasks.filter(t => t.status === 'todo').length, color: '#f59e0b' },
     { name: 'In Progress', value: tasks.filter(t => t.status === 'in-progress').length, color: '#3b82f6' },
-    { name: 'Done', value: tasks.filter(t => t.status === 'done').length, color: '#10b981' },
-  ].filter(d => d.value > 0);
-
-  // In a real app, this data would be filtered based on `timeRange`
-  const activeChartData = useMemo(() => {
-    if (timeRange === 'week') return mockWeeklyData;
-    // Return mock data for month/year for demonstration purposes
-    return mockWeeklyData.map(d => ({ ...d, pomodoros: d.pomodoros * 2, tasks: d.tasks * 2, focusTime: d.focusTime * 2 }));
-  }, [timeRange]);
+    { name: 'Done', value: completedTasks, color: '#10b981' },
+  ].filter(d => d.value > 0), [tasks, completedTasks]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%', overflowY: 'auto', paddingBottom: '24px' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Statistics</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Analyze your deep work patterns and productivity.</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Live analytics derived from your actual focus sessions, tasks, and habits.</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', background: 'var(--glass-bg)', padding: '4px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
           {(['week', 'month', 'year'] as const).map(range => (
@@ -91,23 +78,29 @@ const Statistics = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
         <GlassPanel style={{ textAlign: 'center' }}>
           <h3>Pomodoros Today</h3>
-          <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--accent-primary)', marginTop: '16px' }}>{pomodorosCompletedToday}</div>
+          <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--accent-primary)', marginTop: '16px' }}>
+            {pomodorosCompletedToday}
+          </div>
         </GlassPanel>
         
         <GlassPanel style={{ textAlign: 'center' }}>
           <h3>Tasks Completed</h3>
-          <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--success)', marginTop: '16px' }}>{completedTasks}</div>
+          <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--success)', marginTop: '16px' }}>
+            {completedTasks}
+          </div>
         </GlassPanel>
         
         <GlassPanel style={{ textAlign: 'center' }}>
-          <h3>Total Focus Time</h3>
-          <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--warning)', marginTop: '16px' }}>{pomodorosCompletedToday * 25}m</div>
+          <h3>Total Focus Logged</h3>
+          <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--warning)', marginTop: '16px' }}>
+            {totalFocusTime}m
+          </div>
         </GlassPanel>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px' }}>
         <GlassPanel style={{ display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ marginBottom: '24px' }}>{timeRange === 'week' ? 'Weekly' : timeRange === 'month' ? 'Monthly' : 'Yearly'} Productivity Trend</h3>
+          <h3 style={{ marginBottom: '24px' }}>{timeRange === 'week' ? 'Weekly' : timeRange === 'month' ? 'Monthly' : 'Quarterly'} Activity Trends</h3>
           <div style={{ minHeight: '250px' }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={activeChartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -192,12 +185,14 @@ const Statistics = () => {
             {heatmapData.map((day, idx) => (
               <div 
                 key={idx} 
-                title={`${day.date}: ${day.count} Pomodoros`}
+                title={`${day.date}: ${day.count} activities (${day.focusMinutes}m focus)`}
                 style={{
                   aspectRatio: '1',
                   background: getHeatmapColor(day.count),
                   borderRadius: '3px',
-                  border: '1px solid var(--glass-border)'
+                  border: '1px solid var(--glass-border)',
+                  cursor: 'pointer',
+                  transition: 'transform 0.15s ease',
                 }}
               />
             ))}
@@ -212,6 +207,36 @@ const Statistics = () => {
           </div>
         </GlassPanel>
       </div>
+
+      {categoryData.length > 0 && categoryData.some(c => c.value > 0) && (
+        <GlassPanel>
+          <h3 style={{ marginBottom: '16px' }}>Focus Category Distribution</h3>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            {categoryData.map((cat, idx) => (
+              <div
+                key={cat.name}
+                style={{
+                  padding: '12px 18px',
+                  background: 'var(--glass-bg)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--glass-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                }}
+              >
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: CATEGORY_COLORS[idx % CATEGORY_COLORS.length] }} />
+                <div>
+                  <div style={{ fontWeight: 600 }}>{cat.name}</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    {cat.value} sessions · {cat.minutes}m
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassPanel>
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useTaskStore } from '../store/useTaskStore';
 import { useNoteStore } from '../store/useNoteStore';
 import { useHabitStore } from '../store/useHabitStore';
 import { useJournalStore } from '../store/useJournalStore';
-import { Search, Home, CheckSquare, Clock, FileText, BarChart2, Settings, Moon, Play, Pause, Edit3, Target, BookOpen } from 'lucide-react';
+import { Search, Home, CheckSquare, Clock, FileText, BarChart2, Settings, Moon, Play, Pause, Edit3, Target, BookOpen, Sparkles } from 'lucide-react';
 import { GlassPanel } from './GlassPanel';
 
 interface Command {
@@ -25,7 +25,7 @@ export const CommandPalette = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { setActiveTab } = useAppStore();
-  const { mode, setMode } = useSettingsStore();
+  const { mode, setMode, focusSpaces, setActiveSpace } = useSettingsStore();
   const { isActive, setIsActive } = useFocusStore();
   const { tasks } = useTaskStore();
   const { notes, setActiveNote } = useNoteStore();
@@ -86,7 +86,19 @@ export const CommandPalette = () => {
     type: 'nav'
   }));
 
-  const allCommands = [...baseCommands, ...taskCommands, ...noteCommands, ...habitCommands, ...journalCommands];
+  const spaceCommands: Command[] = focusSpaces.map((space) => ({
+    id: `space-${space.id}`,
+    name: `Focus Space: ${space.name}`,
+    icon: <Sparkles size={18} />,
+    action: () => {
+      setActiveSpace(space.id);
+      setActiveTab('focus');
+    },
+    keywords: [space.name, 'space', 'preset', 'theme', 'noise', space.category],
+    type: 'action',
+  }));
+
+  const allCommands = [...baseCommands, ...spaceCommands, ...taskCommands, ...noteCommands, ...habitCommands, ...journalCommands];
 
   const filteredCommands = allCommands.filter(cmd => 
     cmd.name.toLowerCase().includes(query.toLowerCase()) || 

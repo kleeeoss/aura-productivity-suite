@@ -1,8 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useActivityStore } from './useActivityStore';
+import { useTaskStore } from './useTaskStore';
 
 export type TimerMode = 'work' | 'shortBreak' | 'longBreak';
+
+export interface CompletionPrompt {
+  id: string;
+  taskId?: string;
+  taskTitle?: string;
+  timestamp: string;
+}
 
 interface FocusState {
   workDuration: number;
@@ -16,6 +24,14 @@ interface FocusState {
   isActive: boolean;
   mode: TimerMode;
   
+  // Active Linked Task
+  activeTaskId: string | null;
+  setActiveTaskId: (id: string | null) => void;
+
+  // Post-session reflection prompt
+  completionPrompt: CompletionPrompt | null;
+  dismissCompletionPrompt: () => void;
+
   // Ambient Volumes
   volumes: Record<string, number>;
   
@@ -39,7 +55,7 @@ interface FocusState {
   // Categories & History
   currentCategory: string;
   setCurrentCategory: (category: string) => void;
-  sessionHistory: { id: string; category: string; duration: number; timestamp: string }[];
+  sessionHistory: { id: string; category: string; duration: number; timestamp: string; taskId?: string }[];
   
   incrementPomodoros: () => void;
   resetPomodoros: () => void;
@@ -58,6 +74,12 @@ export const useFocusStore = create<FocusState>()(
       isActive: false,
       mode: 'work',
       
+      activeTaskId: null,
+      setActiveTaskId: (id) => set({ activeTaskId: id }),
+
+      completionPrompt: null,
+      dismissCompletionPrompt: () => set({ completionPrompt: null }),
+
       volumes: {
         'lofi': 0,
         'rain': 0,
@@ -96,6 +118,8 @@ export const useFocusStore = create<FocusState>()(
       setMode: (mode) => set({ mode }),
       
       incrementPomodoros: () => {
+        let linkedTaskTitle: string | null = null;
+        
         set((state) => {
           const today = new Date().toISOString().split('T')[0];
           const newTotal = state.totalFocusTime + state.workDuration;
@@ -103,11 +127,20 @@ export const useFocusStore = create<FocusState>()(
           const newDaily = { ...state.dailyFocusHours };
           newDaily[today] = (newDaily[today] || 0) + state.workDuration;
           
+          if (state.activeTaskId) {
+            const task = useTaskStore.getState().tasks.find(t => t.id === state.activeTaskId);
+            if (task) {
+              linkedTaskTitle = task.title;
+            }
+            useTaskStore.getState().addTimeSpent(state.activeTaskId, state.workDuration);
+          }
+
           const newSession = {
             id: crypto.randomUUID(),
             category: state.currentCategory,
             duration: state.workDuration,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            taskId: state.activeTaskId || undefined,
           };
           
           return { 
@@ -115,10 +148,20 @@ export const useFocusStore = create<FocusState>()(
             totalFocusTime: newTotal,
             longestSession: newLongest,
             dailyFocusHours: newDaily,
-            sessionHistory: [newSession, ...state.sessionHistory].slice(0, 500) // keep last 500
+            sessionHistory: [newSession, ...state.sessionHistory].slice(0, 500),
+            completionPrompt: {
+              id: crypto.randomUUID(),
+              taskId: state.activeTaskId || undefined,
+              taskTitle: linkedTaskTitle || undefined,
+              timestamp: new Date().toISOString(),
+            },
           };
         });
-        useActivityStore.getState().logActivity('pomodoro', `Completed a focus session`);
+
+        const activityTitle = linkedTaskTitle 
+          ? `Completed a focus session: ${linkedTaskTitle}`
+          : `Completed a focus session`;
+        useActivityStore.getState().logActivity('pomodoro', activityTitle);
       },
       resetPomodoros: () => set({ pomodorosCompletedToday: 0 }),
     }),
@@ -126,7 +169,7 @@ export const useFocusStore = create<FocusState>()(
       name: 'focus-storage-v2',
       partialize: (state) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { isActive: _isActive, ...rest } = state;
+        const { isActive: _isActive, completionPrompt: _prompt, ...rest } = state;
         return rest;
       },
     }

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { differenceInDays } from 'date-fns';
 import { useActivityStore } from './useActivityStore';
+import { calculateStreak } from '../utils/productivityMath';
 
 export interface Habit {
   id: string;
@@ -76,32 +76,5 @@ export const useHabitStore = create<HabitState>()(
   )
 );
 
-// Helper function to calculate streaks (can be moved to a separate utils file later)
-export const calculateStreak = (completedDates: string[]) => {
-  if (completedDates.length === 0) return 0;
-  
-  const sortedDates = [...completedDates].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-  let streak = 0;
-  let currentDate = new Date();
-  
-  // Check if completed today or yesterday to continue streak
-  const firstDate = new Date(sortedDates[0]);
-  const diffToFirst = differenceInDays(currentDate, firstDate);
-  
-  if (diffToFirst > 1) return 0; // Streak broken
-  
-  for (let i = 0; i < sortedDates.length; i++) {
-    const d = new Date(sortedDates[i]);
-    if (i > 0) {
-      const prevD = new Date(sortedDates[i - 1]);
-      if (differenceInDays(prevD, d) === 1) {
-        streak++;
-      } else {
-        break;
-      }
-    } else {
-      streak++;
-    }
-  }
-  return streak;
-};
+// Re-export calculateStreak from productivityMath for backward compatibility
+export { calculateStreak };

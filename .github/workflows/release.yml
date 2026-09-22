@@ -1,0 +1,51 @@
+name: Automated Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Draft Release (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+
+      - name: Verify Version Consistency
+        run: npm run verify-version
+
+      - name: Run Test Suite
+        run: npm test
+
+      - name: Build Tauri Application & Draft GitHub Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'AURA v__VERSION__'
+          releaseBody: 'Welcome to AURA v__VERSION__! Explore the release assets below for the Windows installer (.exe) and standalone binaries.'
+          releaseDraft: true
+          prerelease: false

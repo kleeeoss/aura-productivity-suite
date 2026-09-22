@@ -30,6 +30,7 @@ interface JournalState {
   entries: Record<string, JournalEntry>; // date -> entry
   getEntryForDate: (date: string) => JournalEntry | undefined;
   saveEntry: (entry: JournalEntry) => void;
+  appendReflection: (date: string, reflection: string) => void;
 }
 
 export const useJournalStore = create<JournalState>()(
@@ -53,6 +54,46 @@ export const useJournalStore = create<JournalState>()(
         } else {
           useActivityStore.getState().logActivity('journal', `Updated journal entry for ${entry.date}`);
         }
+      },
+      appendReflection: (date, reflection) => {
+        const trimmed = reflection.trim();
+        if (!trimmed) return;
+        const current = get().entries[date];
+        const updatedReflections = current?.eveningReflections
+          ? `${current.eveningReflections}\n• ${trimmed}`
+          : `• ${trimmed}`;
+
+        const entryToSave: JournalEntry = current
+          ? { ...current, eveningReflections: updatedReflections }
+          : {
+              id: crypto.randomUUID(),
+              date,
+              morningIntentions: '',
+              goals: '',
+              gratitude: '',
+              mood: null,
+              energyLevel: null,
+              sleepHours: null,
+              stressLevel: null,
+              eveningReflections: updatedReflections,
+              wins: '',
+              challenges: '',
+              lessonsLearned: '',
+              tomorrowPriorities: '',
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            };
+
+        set((state) => ({
+          entries: {
+            ...state.entries,
+            [date]: {
+              ...entryToSave,
+              updatedAt: new Date().toISOString()
+            }
+          }
+        }));
+        useActivityStore.getState().logActivity('journal', `Added quick reflection for ${date}`);
       }
     }),
     {

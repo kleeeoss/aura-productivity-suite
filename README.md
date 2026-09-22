@@ -79,12 +79,24 @@ Rather than a toy prototype generated in one prompt on a random afternoon, AURA 
   - 🌸 **Pink Noise** (Balanced 1/f falloff for reading & writing)
   - 🟤 **Brownian Noise** (Deep, low-frequency rumble for relaxation)
 
-### 📋 Connected Productivity Modules
-- **Tasks**: Kanban-style task tracker with categories, priority tags, and due-date synchronization.
+### 🪐 Focus Spaces (Context Presets)
+- **Deep Code**: 50m hyperfocus sprint with deep brown noise, Midnight dark theme, and coding category logging.
+- **Study Sprint**: 25m classic Pomodoro with balanced white noise in serene forest theme.
+- **Flow / Writing**: 45m distraction-free writing session with soft pink noise in minimalist theme.
+- **Instant Switching**: Toggle spaces in 1-click via the header pill or global shortcuts (`Ctrl+1`, `Ctrl+2`, `Ctrl+3`).
+
+### 🔄 The Connected Productivity Loop
+- **Task-Linked Focus**: Link active tasks directly to the Focus Timer; track cumulative focus minutes per task.
+- **Post-Session Reflection**: 1-click completion prompts and quick reflection capture that automatically appends to today's Journal without leaving your flow.
+- **Real Analytics Engine**: Replaced all demo data with true persisted aggregations: real 90-day heatmaps, weekly trend charts, and actual category distributions.
+- **Modular Dashboard**: Customize card visibility and vertical ordering (Clock, Weather, Score, Habits, Tasks, Activity, Quotes) to build your ideal command center.
+
+### 📋 Productivity Modules
+- **Tasks**: Kanban-style task tracker with categories, priority tags, and focus time tracking.
 - **Notes**: Instant Markdown editor with live preview and local persistence.
-- **Habits**: Daily habit tracker with streak counting and productivity score integration.
-- **Journal**: Daily reflection log with mood ratings and completed session references.
-- **Statistics**: Focus time breakdowns, category analytics, and historical trends.
+- **Habits**: Daily habit tracker with calendar-accurate streak calculation and achievement unlocks.
+- **Journal**: Daily reflection log with mood ratings and quick session recaps.
+- **Statistics**: Real focus time breakdowns, category analytics, and 90-day activity heatmaps.
 
 ### 🎨 Personalization & Accessibility
 - **6 Premium Themes**: `Glass (Default)`, `Ocean`, `Midnight`, `Sunset`, `Forest`, and `Minimalist`.
@@ -92,7 +104,7 @@ Rather than a toy prototype generated in one prompt on a random afternoon, AURA 
 - **Accent Color Palette**: 8 customizable neon and pastel accent tints.
 - **UI Scaling Slider**: Seamlessly scale the entire interface from **80% to 150%** without layout distortion.
 - **Accessibility Toggles**: Reduce Motion and Disable Animations for low-spec machines.
-- **Data Portability**: Full JSON database export and import.
+- **Defensive Data Portability**: Full JSON database export and schema-validated backup import.
 
 ---
 
@@ -136,6 +148,16 @@ AURA is configured with a unified 3-tier build matrix allowing it to compile int
 4. **Launch with Tauri (Desktop Development)**:
    ```bash
    npm run tauri dev
+   ```
+
+5. **Run the Automated Test Suite**:
+   ```bash
+   npm test
+   ```
+
+6. **Verify Version Consistency**:
+   ```bash
+   npm run verify-version
    ```
 
 ### Building Releases

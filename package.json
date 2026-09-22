@@ -1,7 +1,7 @@
 {
   "name": "aura",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A glassmorphic desktop productivity suite built with React 19, Tauri v2, and Electron.",
   "author": "AURA Contributors",
   "license": "MIT",
@@ -11,6 +11,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify-version": "node scripts/verify-version.js",
     "preview": "vite preview",
     "electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
     "dev:electron": "concurrently -k \"npm run dev\" \"npm run electron\"",
@@ -64,9 +67,11 @@
     "cross-env": "^10.1.0",
     "electron": "^43.3.0",
     "electron-builder": "^26.15.3",
+    "jsdom": "^30.1.1",
     "oxlint": "^1.75.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0",
+    "vitest": "^5.0.1",
     "wait-on": "^9.1.0"
   }
 }

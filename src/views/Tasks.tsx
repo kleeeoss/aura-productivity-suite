@@ -175,13 +175,14 @@ const Tasks = () => {
                 
                 <SortableContext items={columnTasks.map(t => t.id)}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1, minHeight: '200px' }}>
-                    {columnTasks.map(task => (
-                      <SortableTask key={task.id} task={task} onClick={() => setActiveDetailsId(task.id)} />
-                    ))}
-                    {columnTasks.length === 0 && (
-                      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', border: '1px dashed var(--glass-border)', borderRadius: '8px' }}>
-                        Drop tasks here
+                    {columnTasks.length === 0 ? (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '120px', border: '1px dashed var(--glass-border)', borderRadius: '8px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                        No tasks in {column.label}
                       </div>
+                    ) : (
+                      columnTasks.map(task => (
+                        <SortableTask key={task.id} task={task} onClick={() => setActiveDetailsId(task.id)} />
+                      ))
                     )}
                   </div>
                 </SortableContext>

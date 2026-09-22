@@ -4,6 +4,7 @@ import { GlassPanel } from '../components/GlassPanel';
 import { Settings as SettingsIcon, Palette, Type, Moon, Thermometer, Database, Download, Upload, User, Trash2, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
 import React, { useRef } from 'react';
 import { useToast } from '../contexts/ToastContext';
+import { validateBackupData } from '../utils/productivityMath';
 
 const Settings = () => {
   const { 
@@ -81,15 +82,20 @@ const Settings = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const data = JSON.parse(event.target?.result as string);
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            localStorage.setItem(key, data[key]);
-          }
+        const rawJson = JSON.parse(event.target?.result as string);
+        const validation = validateBackupData(rawJson);
+
+        if (!validation.valid || !validation.sanitizedData) {
+          alert(`Backup validation failed: ${validation.error || 'Invalid format'}`);
+          return;
+        }
+
+        for (const [key, value] of Object.entries(validation.sanitizedData)) {
+          localStorage.setItem(key, value);
         }
         alert('Data imported successfully! The application will now reload to apply changes.');
         window.location.reload();
-      } catch (_err) {
+      } catch {
         alert('Failed to parse backup file. Please ensure it is a valid JSON backup.');
       }
     };
@@ -104,7 +110,9 @@ const Settings = () => {
       localStorage.removeItem('task-storage');
       localStorage.removeItem('habit-storage');
       localStorage.removeItem('note-storage');
+      localStorage.removeItem('journal-storage-v2');
       localStorage.removeItem('journal-storage');
+      localStorage.removeItem('focus-storage-v2');
       localStorage.removeItem('focus-storage');
       localStorage.removeItem('activity-storage');
       toast('All user data cleared', 'success');
