@@ -18,6 +18,8 @@ flowchart TD
     I7 --> I8["Iteration 8: The Background Drift Bug<br/>(OS Throttle & Timestamp Delta Math)"]
     I8 --> I9["Iteration 9: The Tauri Paradigm Shift<br/>(Rust Toolchain, 3-Tier Build Matrix)"]
     I9 --> I10["Iteration 10: Media Engine & NSIS Bundler<br/>(Spotify/YouTube Iframe, Transform Scaling)"]
+    I10 --> I11["Iteration 11: The Multiverse Visual Engine<br/>(10 Orthogonal Dimensions, 8 Worlds)"]
+    I11 --> I12["Iteration 12: Local Markdown Vault & Mind Map<br/>(CodeMirror 6, @dnd-kit Cockpit, Pure Tauri v2)"]
 ```
 
 ---
@@ -148,6 +150,34 @@ flowchart TD
   rootElement.style.width = `${100 / scale}%`;
   rootElement.style.height = `${100 / scale}%`;
   ```
+
+---
+
+### Iteration 11 — The Multiverse Visual Engine & 10-Dimension Architectural Worldbuilding
+* **The Directive & Vision**:
+  - Move beyond shallow color-swapping themes. Build authentic, fully cohesive visual and tactile environments.
+  - Implement 8 canonical theme worlds: Translucent Cockpit, Cyber-CLI 1984, Neo-Brutalist Studio, Editorial Broadsheet, Technical Blueprint, 8-Bit Arcade, Obsidian Monolith, and Zen Botanical.
+* **Architecture Built**:
+  - **10 Orthogonal Dimensions**: Formalized Concept & Atmosphere, 4-Tier Typography (Display, Body, Mono, Accent), Silhouette Geometry (0px chamfers to asymmetric pebbles), Borders & Linework, Shadows & Depth, Surfaces & Textures (CRT scanlines, millimeter grids, linen, Game Boy dot matrix), Spatial Density, Motion Dynamics (0ms steps to 400ms easing), Interaction Feedback (tactile buttons, phosphor blooms), and Telemetry.
+  - **Theme-Adaptive Focus Telemetry**: Real-time ASCII bracket meters for Cyber-CLI, tactile segmented blocks for Neo-Brutalist, 8-bit heart/XP bars for Arcade, and caliper gauges for Blueprint.
+  - **Live Specimen Matrix**: Built interactive visual specimen board in Settings to audit typography, button depression physics, and border styles.
+
+---
+
+### Iteration 12 — Local-First Markdown Vault, Mind Map Extension & Cockpit Polish
+* **The Directive & Vision**:
+  - Transform Notes into a true **Local-First, Zero-Telemetry Markdown Knowledge Vault** where standard `.md` files on the local filesystem are the single source of truth.
+  - Add an interactive visual **Notes Mind Map Extension** with bi-directional synchronization.
+  - Introduce **Live Drag-and-Drop Dashboard Customization** powered by `@dnd-kit`.
+  - Decouple Focus Spaces workflow presets from visual themes, preserving the user's active theme world.
+  - Complete transition to **Pure Tauri v2 Desktop Runtime**, purging legacy Electron code.
+* **Engineering Solutions & Hurdles Solved**:
+  - **Local Markdown Vault (`IVaultDriver`)**: Implemented clean driver abstraction with `TauriVaultDriver` for native desktop operation (hardware atomic staging writes via `.tmp` + atomic rename, defensive `.trash/` safety, and live Rust filesystem watching via `notify-debouncer-mini`) and `MemoryVaultDriver` for testing.
+  - **CodeMirror 6 Tri-Mode Editor**: Reading, Source, and Split views featuring offline bundled KaTeX math formula rendering, interactive checklist checkboxes, and GFM raw HTML support with strict CSS layout containment.
+  - **Interactive Mind Map Canvas**: Bi-directional outline parser translating headings and nested lists into dynamic SVG knowledge trees with collision-free radial hierarchy, fluid pan/zoom, and wiki-link deep navigation.
+  - **Live Dashboard Customizer**: Reorderable widget matrix with `@dnd-kit`, individual module visibility toggles, and persistent workspace configurations.
+  - **Weather Resilience**: In-memory caching (30m TTL), 1.5s network timeout for zero UI blocking, and silent offline fallback preventing unhandled exceptions.
+  - **Timezone-Safe Date Calculations**: `toLocalDateString()` ensuring calendar alignments and streaks match local midnight accurately.
 
 ---
 

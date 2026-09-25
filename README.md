@@ -79,7 +79,7 @@ Visual thinking meets structural documentation. AURA 1.2 introduces the **Notes 
 
 ---
 
-## 🎛️ Drag-and-Drop Dashboard Edit Mode
+## 🎛 Drag-and-Drop Dashboard Edit Mode
 
 Your productivity cockpit should match your cognitive workflow. AURA 1.2 introduces **Live Dashboard Edit Mode**, empowering users to reorder and configure dashboard cards with tactile drag-and-drop mechanics powered by `@dnd-kit`.
 
@@ -88,7 +88,7 @@ Your productivity cockpit should match your cognitive workflow. AURA 1.2 introdu
   <p><em>Live Cockpit Customizer: Drag-and-drop widget reordering powered by @dnd-kit, instant visibility toggles, and persistent workspace configurations.</em></p>
 </div>
 
-### 🛠️ Customization Options:
+### 🛠 Customization Options:
 - **Tactile Drag-and-Drop Reordering**: Grab widget handles to shift cards up, down, or across columns with smooth layout animations and physical drop feedback.
 - **Granular Module Toggles**: Independently show or hide any of the 8 core cockpit modules: Live Clock, Weather, Daily Calendar, Habits, Tasks, Recent Activity Feed, Productivity Score, and Motivational Quotes.
 - **Instant Persistence & Canonical Reset**: Layout configurations persist automatically to local state, with a one-click "Reset Layout" button to instantly restore the default balance.
@@ -152,7 +152,7 @@ AURA separates typography into four purposeful roles:
 
 ---
 
-### ⏱️ Theme-Adaptive Focus & Telemetry
+### ⏱ Theme-Adaptive Focus & Telemetry
 
 When working in the Focus Suite, your Pomodoro countdown progress automatically mirrors the mechanical personality of your active theme world:
 
@@ -198,7 +198,7 @@ Rather than a toy prototype generated in one prompt on a random afternoon, AURA 
 - **Recent Activity Feed**: Central event stream updating whenever work is logged anywhere in the application.
 - **Motivational Engine**: Dynamic quotes that refresh across tabs.
 
-### ⏱️ Focus Suite (Pomodoro)
+### ⏱ Focus Suite (Pomodoro)
 - **State-Persistent Timer**: Work, Short Break, and Long Break intervals that persist smoothly across tab navigation.
 - **Background Drift Immunity**: Uses real-world timestamp deltas so timers never pause when AURA is out of focus.
 - **Theme-Adaptive Telemetry**: Progress rings, ASCII brackets, caliper gauges, and 8-bit health bars that match your visual world.
@@ -240,7 +240,7 @@ Rather than a toy prototype generated in one prompt on a random afternoon, AURA 
 
 ---
 
-## 🏛️ Desktop Architecture Matrix
+## 🏛 Desktop Architecture Matrix
 
 AURA is configured with a unified build matrix targeting native Windows desktop and web:
 
