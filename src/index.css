@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fira+Code:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Merriweather:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Press+Start+2P&family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=VT323&display=swap');
+@import url('./fonts.css');
+@import url('./katex.css');
 @import url('./themes.css');
 
 :root {
@@ -260,3 +261,371 @@ html.reduce-motion *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
 }
+
+/* ==========================================================================
+   Markdown Rendering & Layout Containment Protocol (AURA 1.2)
+   Fixes pathological layout blowouts (kkkkkk... bug) and provides rich notes
+   ========================================================================== */
+
+.notes-container,
+.notes-editor-panel,
+.editor-split-container,
+.editor-pane,
+.markdown-preview,
+.markdown-preview p,
+.markdown-preview li,
+.markdown-preview blockquote,
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.editor-split-container {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+.editor-pane,
+.markdown-preview {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.table-container,
+.markdown-preview pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Markdown Semantic Element Styles */
+.markdown-preview h1 {
+  color: var(--md-h1-color, var(--accent-primary));
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin-top: 1.2em;
+  margin-bottom: 0.6em;
+  line-height: 1.3;
+}
+
+.markdown-preview h2 {
+  color: var(--md-h2-color, var(--accent-secondary));
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.1em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+.markdown-preview h3 {
+  color: var(--md-h3-color, var(--text-primary));
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+  line-height: 1.4;
+}
+
+.markdown-preview h4 {
+  color: var(--md-h4-color, var(--text-secondary));
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 0.8em;
+  margin-bottom: 0.4em;
+}
+
+.markdown-preview p {
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: 1em;
+}
+
+.markdown-preview strong {
+  color: var(--md-bold-color, var(--text-primary));
+  font-weight: 600;
+}
+
+.markdown-preview em {
+  color: var(--md-italic-color, var(--text-secondary));
+}
+
+.markdown-preview a {
+  color: var(--md-link-color, var(--accent-primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.markdown-preview a:hover {
+  color: var(--md-link-hover, var(--accent-secondary));
+}
+
+/* HTML Block and Alignment Styles */
+.markdown-preview [align="center"],
+.markdown-preview div[align="center"],
+.markdown-preview p[align="center"] {
+  text-align: center;
+}
+
+.markdown-preview [align="right"],
+.markdown-preview div[align="right"],
+.markdown-preview p[align="right"] {
+  text-align: right;
+}
+
+.markdown-preview [align="left"],
+.markdown-preview div[align="left"],
+.markdown-preview p[align="left"] {
+  text-align: left;
+}
+
+.markdown-preview [align="justify"],
+.markdown-preview div[align="justify"],
+.markdown-preview p[align="justify"] {
+  text-align: justify;
+}
+
+.markdown-preview [align="center"] img,
+.markdown-preview div[align="center"] img,
+.markdown-preview p[align="center"] img {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.markdown-preview code:not(pre code) {
+  background: var(--md-code-inline-bg, rgba(255, 255, 255, 0.08));
+  color: var(--md-code-inline-color, var(--accent-secondary));
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88em;
+}
+
+.markdown-preview pre {
+  background: var(--md-code-block-bg, rgba(0, 0, 0, 0.4));
+  border: 1px solid var(--md-code-border, var(--glass-border));
+  border-radius: var(--shape-radius-sm, 8px);
+  padding: 16px;
+  margin: 1em 0;
+  position: relative;
+}
+
+.markdown-preview pre code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.markdown-preview blockquote {
+  border-left: 3px solid var(--md-quote-border, var(--accent-primary));
+  background: var(--md-quote-bg, rgba(255, 255, 255, 0.03));
+  color: var(--md-quote-text, var(--text-secondary));
+  padding: 12px 18px;
+  margin: 1em 0;
+  border-radius: 0 var(--shape-radius-sm, 8px) var(--shape-radius-sm, 8px) 0;
+}
+
+/* Callouts (> [!NOTE], > [!TIP], > [!WARNING], > [!DANGER], > [!INFO]) */
+.callout {
+  border-left: 4px solid var(--callout-border, var(--accent-primary));
+  background: var(--callout-bg, rgba(99, 102, 241, 0.08));
+  border-radius: var(--shape-radius-sm, 8px);
+  padding: 14px 18px;
+  margin: 1.2em 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.callout-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  color: var(--callout-border, var(--accent-primary));
+}
+
+.callout-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.callout-note {
+  --callout-border: var(--md-callout-note-border, #3b82f6);
+  --callout-bg: var(--md-callout-note-bg, rgba(59, 130, 246, 0.1));
+}
+
+.callout-tip {
+  --callout-border: var(--md-callout-tip-border, #8b5cf6);
+  --callout-bg: var(--md-callout-tip-bg, rgba(139, 92, 246, 0.1));
+}
+
+.callout-warning {
+  --callout-border: var(--md-callout-warn-border, #f59e0b);
+  --callout-bg: var(--md-callout-warn-bg, rgba(245, 158, 11, 0.1));
+}
+
+.callout-danger {
+  --callout-border: var(--md-callout-danger-border, #ef4444);
+  --callout-bg: var(--md-callout-danger-bg, rgba(239, 68, 68, 0.1));
+}
+
+.callout-info {
+  --callout-border: var(--md-callout-info-border, #06b6d4);
+  --callout-bg: var(--md-callout-info-bg, rgba(6, 182, 212, 0.1));
+}
+
+/* Wiki-Links */
+.wiki-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--md-wikilink-color, var(--accent-primary));
+  background: var(--md-wikilink-bg, rgba(99, 102, 241, 0.12));
+  padding: 1px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px dashed var(--md-wikilink-color, var(--accent-primary));
+  transition: all 0.15s ease;
+}
+
+.wiki-link:hover {
+  filter: brightness(1.2);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* KaTeX Formulas */
+.katex-display {
+  margin: 1.2em 0 !important;
+  padding: 12px;
+  background: var(--md-math-bg, rgba(56, 189, 248, 0.05));
+  border-radius: var(--shape-radius-sm, 8px);
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.katex {
+  color: var(--md-math-color, #38bdf8);
+}
+
+/* Tables */
+.table-container {
+  margin: 1.2em 0;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: var(--shape-radius-sm, 8px);
+  border: 1px solid var(--md-table-border, var(--glass-border));
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.table-container th {
+  background: var(--md-table-header-bg, rgba(255, 255, 255, 0.06));
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid var(--md-table-border, var(--glass-border));
+}
+
+.table-container td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--md-table-border, var(--glass-border));
+}
+
+.table-container tr:last-child td {
+  border-bottom: none;
+}
+
+/* Task Checklists */
+.markdown-preview ul.contains-task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.markdown-preview .task-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.markdown-preview .task-list-item input[type="checkbox"] {
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: var(--accent-primary);
+}
+
+/* HTML Details and Summary Collapsible Blocks */
+.markdown-preview details {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  border-radius: var(--shape-radius-sm, 8px);
+  padding: 10px 14px;
+  margin: 1em 0;
+}
+
+.markdown-preview summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent-primary);
+  user-select: none;
+}
+
+.markdown-preview details[open] summary {
+  margin-bottom: 8px;
+}
+
+/* CodeMirror 6 Editor Container */
+.cm-editor {
+  height: 100% !important;
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 0.95rem !important;
+  background: transparent !important;
+  border-radius: var(--shape-radius-sm, 8px);
+}
+
+.cm-scroller {
+  overflow: auto;
+  font-family: inherit;
+}
+
+.cm-content {
+  padding: 16px !important;
+  caret-color: var(--accent-primary);
+  line-height: 1.6;
+}
+
+.cm-gutters {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  color: var(--text-secondary) !important;
+}
+
+.cm-activeLine {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.cm-activeLineGutter {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-primary) !important;
+}
+

@@ -1,4 +1,5 @@
 import { format, subDays, eachDayOfInterval, startOfDay } from 'date-fns';
+import { toLocalDateString } from './date';
 
 export interface TrendDataPoint {
   name: string;
@@ -39,7 +40,7 @@ export const getTrendData = (
   const sessionMap = new Map<string, { count: number; minutes: number }>();
   for (const session of sessions) {
     if (!session.timestamp) continue;
-    const dateStr = session.timestamp.split('T')[0];
+    const dateStr = toLocalDateString(session.timestamp);
     const existing = sessionMap.get(dateStr) || { count: 0, minutes: 0 };
     sessionMap.set(dateStr, {
       count: existing.count + 1,
@@ -51,7 +52,7 @@ export const getTrendData = (
   const taskMap = new Map<string, number>();
   for (const task of tasks) {
     if (task.status === 'done' && task.completedAt) {
-      const dateStr = task.completedAt.split('T')[0];
+      const dateStr = toLocalDateString(task.completedAt);
       taskMap.set(dateStr, (taskMap.get(dateStr) || 0) + 1);
     }
   }
@@ -95,7 +96,7 @@ export const getHeatmapData = (
   const taskCountMap = new Map<string, number>();
   for (const dateStr of completedTaskDates) {
     if (!dateStr) continue;
-    const dayStr = dateStr.split('T')[0];
+    const dayStr = toLocalDateString(dateStr);
     taskCountMap.set(dayStr, (taskCountMap.get(dayStr) || 0) + 1);
   }
 

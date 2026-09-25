@@ -4,10 +4,11 @@ import type { JournalEntry } from '../store/useJournalStore';
 import { GlassPanel } from '../components/GlassPanel';
 import { BookOpen, Sunrise, Sunset, ChevronLeft, ChevronRight, Smile, Frown, Meh, Heart, Coffee, Target, Zap, Moon, Trophy, AlertTriangle, Lightbulb, ListTodo } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
+import { toLocalDateString } from '../utils/date';
 
 const Journal = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const dateString = currentDate.toISOString().split('T')[0];
+  const dateString = toLocalDateString(currentDate);
   const { toast } = useToast();
   
   const { getEntryForDate, saveEntry } = useJournalStore();
@@ -76,7 +77,7 @@ const Journal = () => {
     { value: 'terrible', icon: <Frown size={24} />, color: '#ef4444', label: 'Terrible' },
   ] as const;
 
-  const isToday = new Date().toISOString().split('T')[0] === dateString;
+  const isToday = toLocalDateString() === dateString;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%', overflowY: 'auto', paddingBottom: '32px' }}>

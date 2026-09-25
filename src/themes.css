@@ -41,6 +41,39 @@
   --btn-transform-hover: translateY(-2px);
   --btn-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.2);
   --btn-transform-active: translateY(0);
+
+  /* Markdown Semantic Design Tokens (Baseline) */
+  --md-h1-color: var(--accent-primary);
+  --md-h2-color: var(--accent-secondary);
+  --md-h3-color: var(--text-primary);
+  --md-h4-color: var(--text-secondary);
+  --md-bold-color: var(--text-primary);
+  --md-italic-color: var(--text-secondary);
+  --md-link-color: var(--accent-primary);
+  --md-link-hover: var(--accent-secondary);
+  --md-code-inline-bg: rgba(255, 255, 255, 0.08);
+  --md-code-inline-color: var(--accent-secondary);
+  --md-code-block-bg: rgba(0, 0, 0, 0.4);
+  --md-code-border: var(--glass-border);
+  --md-quote-bg: rgba(255, 255, 255, 0.03);
+  --md-quote-border: var(--accent-primary);
+  --md-quote-text: var(--text-secondary);
+  --md-table-header-bg: rgba(255, 255, 255, 0.06);
+  --md-table-border: var(--glass-border);
+  --md-callout-note-border: #3b82f6;
+  --md-callout-note-bg: rgba(59, 130, 246, 0.1);
+  --md-callout-warn-border: #f59e0b;
+  --md-callout-warn-bg: rgba(245, 158, 11, 0.1);
+  --md-callout-tip-border: #8b5cf6;
+  --md-callout-tip-bg: rgba(139, 92, 246, 0.1);
+  --md-callout-danger-border: #ef4444;
+  --md-callout-danger-bg: rgba(239, 68, 68, 0.1);
+  --md-callout-info-border: #06b6d4;
+  --md-callout-info-bg: rgba(6, 182, 212, 0.1);
+  --md-math-color: #38bdf8;
+  --md-math-bg: rgba(56, 189, 248, 0.06);
+  --md-wikilink-color: var(--accent-primary);
+  --md-wikilink-bg: rgba(99, 102, 241, 0.12);
 }
 
 /* 1. Translucent Cockpit (Canonical Glassmorphism) */
@@ -81,6 +114,14 @@
   --btn-transform-hover: translateY(-2px);
   --btn-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.2);
   --btn-transform-active: translateY(0);
+
+  --md-h1-color: #818cf8;
+  --md-h2-color: #f472b6;
+  --md-h3-color: #f8fafc;
+  --md-h4-color: #94a3b8;
+  --md-math-color: #c084fc;
+  --md-wikilink-color: #60a5fa;
+  --md-wikilink-bg: rgba(96, 165, 250, 0.12);
 }
 
 [data-theme='ocean'] {
@@ -93,6 +134,12 @@
   --accent-gradient: linear-gradient(135deg, #0ea5e9, #14b8a6);
   --text-primary: #f0f9ff;
   --text-secondary: #7dd3fc;
+
+  --md-h1-color: #38bdf8;
+  --md-h2-color: #2dd4bf;
+  --md-math-color: #38bdf8;
+  --md-wikilink-color: #38bdf8;
+  --md-wikilink-bg: rgba(56, 189, 248, 0.12);
 }
 
 /* 2. Terminal / Cyber-CLI 1984 */
@@ -131,6 +178,20 @@
   --btn-transform-hover: none;
   --btn-shadow-hover: 0 0 10px rgba(34, 197, 94, 0.4);
   --btn-transform-active: none;
+
+  --md-h1-color: #4ade80;
+  --md-h2-color: #22c55e;
+  --md-h3-color: #16a34a;
+  --md-h4-color: #15803d;
+  --md-code-inline-bg: rgba(34, 197, 94, 0.15);
+  --md-code-inline-color: #86efac;
+  --md-code-block-bg: #020d04;
+  --md-code-border: #22c55e;
+  --md-quote-bg: rgba(34, 197, 94, 0.05);
+  --md-quote-border: #22c55e;
+  --md-math-color: #4ade80;
+  --md-wikilink-color: #86efac;
+  --md-wikilink-bg: rgba(34, 197, 94, 0.12);
 }
 
 /* 3. Neo-Brutalist Studio */
@@ -170,6 +231,24 @@
   --btn-transform-hover: translate(-2px, -2px);
   --btn-shadow-hover: 6px 6px 0px #0f172a;
   --btn-transform-active: translate(2px, 2px);
+
+  --md-h1-color: #0f172a;
+  --md-h2-color: #ea580c;
+  --md-h3-color: #c2410c;
+  --md-h4-color: #475569;
+  --md-bold-color: #0f172a;
+  --md-code-inline-bg: #fef08a;
+  --md-code-inline-color: #0f172a;
+  --md-code-block-bg: #fef9c3;
+  --md-code-border: #0f172a;
+  --md-quote-bg: #ffffff;
+  --md-quote-border: #0f172a;
+  --md-quote-text: #1e293b;
+  --md-table-header-bg: #fde047;
+  --md-table-border: #0f172a;
+  --md-math-color: #0f172a;
+  --md-wikilink-color: #ea580c;
+  --md-wikilink-bg: rgba(234, 88, 12, 0.15);
 }
 
 /* 4. Atelier / Editorial Broadsheet */
@@ -208,6 +287,22 @@
   --btn-transform-hover: translateY(-1px);
   --btn-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
   --btn-transform-active: translateY(0);
+
+  --md-h1-color: #9a3412;
+  --md-h2-color: #b45309;
+  --md-h3-color: #78350f;
+  --md-h4-color: #57534e;
+  --md-bold-color: #1c1917;
+  --md-code-inline-bg: rgba(154, 52, 18, 0.08);
+  --md-code-inline-color: #9a3412;
+  --md-code-block-bg: rgba(41, 37, 36, 0.06);
+  --md-code-border: rgba(154, 52, 18, 0.2);
+  --md-quote-bg: rgba(154, 52, 18, 0.04);
+  --md-quote-border: #9a3412;
+  --md-quote-text: #44403c;
+  --md-math-color: #9a3412;
+  --md-wikilink-color: #1d4ed8;
+  --md-wikilink-bg: rgba(29, 78, 216, 0.08);
 }
 
 /* 5. Technical Blueprint / CAD Draftsman */
@@ -246,6 +341,21 @@
   --btn-transform-hover: scale(1.01);
   --btn-shadow-hover: 0 0 12px rgba(56, 189, 248, 0.4);
   --btn-transform-active: scale(1);
+
+  --md-h1-color: #38bdf8;
+  --md-h2-color: #60a5fa;
+  --md-h3-color: #93c5fd;
+  --md-h4-color: #64748b;
+  --md-code-inline-bg: rgba(56, 189, 248, 0.12);
+  --md-code-inline-color: #38bdf8;
+  --md-code-block-bg: rgba(15, 23, 42, 0.85);
+  --md-code-border: #0284c7;
+  --md-quote-bg: rgba(2, 132, 199, 0.06);
+  --md-quote-border: #0284c7;
+  --md-table-border: #0284c7;
+  --md-math-color: #38bdf8;
+  --md-wikilink-color: #38bdf8;
+  --md-wikilink-bg: rgba(56, 189, 248, 0.12);
 }
 
 /* 6. 8-Bit Arcade / Microcomputer */
@@ -284,6 +394,20 @@
   --btn-transform-hover: translate(-2px, -2px);
   --btn-shadow-hover: 4px 4px 0px #18181b;
   --btn-transform-active: translate(2px, 2px);
+
+  --md-h1-color: #facc15;
+  --md-h2-color: #84cc16;
+  --md-h3-color: #fb923c;
+  --md-h4-color: #a3e635;
+  --md-code-inline-bg: rgba(250, 204, 21, 0.15);
+  --md-code-inline-color: #facc15;
+  --md-code-block-bg: #09090b;
+  --md-code-border: #84cc16;
+  --md-quote-bg: rgba(132, 204, 22, 0.08);
+  --md-quote-border: #84cc16;
+  --md-math-color: #facc15;
+  --md-wikilink-color: #fde047;
+  --md-wikilink-bg: rgba(253, 224, 71, 0.15);
 }
 
 /* 7. Obsidian Monolith (Neo-Noir OLED) */
@@ -324,6 +448,21 @@
   --btn-transform-hover: translateY(-1px);
   --btn-shadow-hover: 0 0 16px rgba(168, 85, 247, 0.25);
   --btn-transform-active: translateY(0);
+
+  --md-h1-color: #f43f5e;
+  --md-h2-color: #fbbf24;
+  --md-h3-color: #c084fc;
+  --md-h4-color: #94a3b8;
+  --md-code-inline-bg: rgba(192, 132, 252, 0.12);
+  --md-code-inline-color: #c084fc;
+  --md-code-block-bg: #0d0d11;
+  --md-code-border: #27272a;
+  --md-quote-bg: rgba(139, 92, 246, 0.08);
+  --md-quote-border: #8b5cf6;
+  --md-quote-text: #d4d4d8;
+  --md-math-color: #38bdf8;
+  --md-wikilink-color: #c084fc;
+  --md-wikilink-bg: rgba(192, 132, 252, 0.14);
 }
 
 /* 8. Zen Botanical / Wabi-Sabi */
@@ -363,6 +502,21 @@
   --btn-transform-hover: translateY(-2px) scale(1.01);
   --btn-shadow-hover: 0 10px 24px rgba(82, 183, 136, 0.2);
   --btn-transform-active: translateY(0) scale(1);
+
+  --md-h1-color: #52b788;
+  --md-h2-color: #74c69d;
+  --md-h3-color: #95d5b2;
+  --md-h4-color: #a3b18a;
+  --md-code-inline-bg: rgba(82, 183, 136, 0.12);
+  --md-code-inline-color: #74c69d;
+  --md-code-block-bg: rgba(45, 55, 46, 0.6);
+  --md-code-border: rgba(132, 169, 140, 0.35);
+  --md-quote-bg: rgba(82, 183, 136, 0.06);
+  --md-quote-border: #52b788;
+  --md-quote-text: #d8f3dc;
+  --md-math-color: #74c69d;
+  --md-wikilink-color: #52b788;
+  --md-wikilink-bg: rgba(82, 183, 136, 0.15);
 }
 
 /* Light Mode Overrides */

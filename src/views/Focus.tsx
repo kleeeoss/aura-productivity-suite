@@ -11,6 +11,7 @@ import { AudioVisualizer } from '../components/AudioVisualizer';
 import EmbeddedMediaPlayer from '../components/EmbeddedMediaPlayer';
 import { SpaceSwitcher } from '../components/SpaceSwitcher';
 import { format } from 'date-fns';
+import { toLocalDateString } from '../utils/date';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { renderThemeTelemetry } from '../utils/multiverseTheme';
 
@@ -91,7 +92,7 @@ const Focus = () => {
 
   const handleSaveReflection = () => {
     if (!reflectionInput.trim()) return;
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const today = toLocalDateString();
     appendReflection(today, reflectionInput);
     toast('Saved reflection to daily journal!', 'success');
     setReflectionInput('');
@@ -341,11 +342,11 @@ const Focus = () => {
         <GlassPanel className="focus-mixer" style={{ marginTop: '0' }}>
           <h3 style={{ marginBottom: '16px' }}>Today's Sessions</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto' }}>
-            {sessionHistory.filter(s => s.timestamp.startsWith(format(new Date(), 'yyyy-MM-dd'))).length === 0 ? (
+            {sessionHistory.filter(s => toLocalDateString(s.timestamp) === toLocalDateString()).length === 0 ? (
               <p style={{ color: 'var(--text-secondary)' }}>No sessions completed today yet.</p>
             ) : (
               sessionHistory
-                .filter(s => s.timestamp.startsWith(format(new Date(), 'yyyy-MM-dd')))
+                .filter(s => toLocalDateString(s.timestamp) === toLocalDateString())
                 .map((session) => (
                   <div key={session.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: 'var(--glass-bg)', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

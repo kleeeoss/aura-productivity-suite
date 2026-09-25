@@ -1,12 +1,11 @@
 {
   "name": "aura",
   "private": true,
-  "version": "1.1.1",
-  "description": "A glassmorphic desktop productivity suite built with React 19, Tauri v2, and Electron.",
+  "version": "1.2.0",
+  "description": "A glassmorphic desktop productivity suite built with React 19 and Tauri v2.",
   "author": "AURA Contributors",
   "license": "MIT",
   "type": "module",
-  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -15,38 +14,23 @@
     "test:watch": "vitest",
     "verify-version": "node scripts/verify-version.js",
     "preview": "vite preview",
-    "electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
-    "dev:electron": "concurrently -k \"npm run dev\" \"npm run electron\"",
     "tauri": "tauri",
     "dist:web": "npm run build",
-    "dist:electron": "npm run build && electron-builder",
     "dist:tauri": "tauri build && pwsh -Command \"New-Item -ItemType Directory -Force Builds/Tauri; Copy-Item src-tauri/target/release/bundle/nsis/*.exe Builds/Tauri/ -ErrorAction SilentlyContinue; Copy-Item src-tauri/target/release/app.exe Builds/Tauri/AURA_standalone.exe -ErrorAction SilentlyContinue; Copy-Item src-tauri/target/release/app.exe Builds/Tauri/AURA.exe -ErrorAction SilentlyContinue\"",
-    "dist:all": "npm run dist:web && npm run dist:electron && npm run dist:tauri"
-  },
-  "build": {
-    "appId": "com.aura.app",
-    "productName": "AURA",
-    "directories": {
-      "output": "Builds/Electron"
-    },
-    "files": [
-      "Builds/Web/**/*",
-      "electron/**/*"
-    ],
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ],
-      "icon": "assets/icon.png"
-    }
+    "dist:all": "npm run dist:web && npm run dist:tauri"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.13",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "date-fns": "^4.4.0",
     "framer-motion": "^13.0.0",
+    "katex": "^0.18.9",
     "lucide-react": "^1.29.0",
     "marked": "^18.0.9",
     "react": "^19.2.8",
@@ -54,7 +38,10 @@
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
     "recharts": "^3.10.1",
+    "rehype-katex": "^7.0.1",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
@@ -64,15 +51,10 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
-    "concurrently": "^10.0.4",
-    "cross-env": "^10.1.0",
-    "electron": "^43.3.0",
-    "electron-builder": "^26.15.3",
     "happy-dom": "^20.14.5",
     "oxlint": "^1.75.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0",
-    "vitest": "^5.0.1",
-    "wait-on": "^9.1.0"
+    "vitest": "^5.0.1"
   }
 }

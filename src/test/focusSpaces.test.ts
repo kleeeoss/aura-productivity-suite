@@ -29,15 +29,17 @@ describe('Focus Spaces System', () => {
     expect(ids).toContain('flow-writing');
   });
 
-  it('switching to Deep Code applies midnight theme, 50m timer, and brown noise', () => {
+  it('switching to Deep Code preserves active multiverse theme, applies 50m timer, and brown noise', () => {
+    useSettingsStore.setState({ theme: 'cyber-cli', accentColor: '#00ff66' });
     useSettingsStore.getState().setActiveSpace('deep-code');
 
     const settings = useSettingsStore.getState();
     const focus = useFocusStore.getState();
 
     expect(settings.activeSpaceId).toBe('deep-code');
-    expect(settings.theme).toBe('midnight');
-    expect(settings.accentColor).toBe('#6366f1');
+    // Multiverse theme must be preserved and not overwritten to legacy theme
+    expect(settings.theme).toBe('cyber-cli');
+    expect(settings.accentColor).toBe('#00ff66');
 
     expect(focus.workDuration).toBe(50);
     expect(focus.breakDuration).toBe(10);
@@ -45,20 +47,39 @@ describe('Focus Spaces System', () => {
     expect(focus.volumes.brown).toBe(45);
   });
 
-  it('switching to Study Sprint applies forest theme, 25m timer, and white noise', () => {
+  it('switching to Study Sprint preserves active multiverse theme, applies 25m timer, and white noise', () => {
+    useSettingsStore.setState({ theme: 'translucent-cockpit', accentColor: '#38bdf8' });
     useSettingsStore.getState().setActiveSpace('study-sprint');
 
     const settings = useSettingsStore.getState();
     const focus = useFocusStore.getState();
 
     expect(settings.activeSpaceId).toBe('study-sprint');
-    expect(settings.theme).toBe('forest');
-    expect(settings.accentColor).toBe('#10b981');
+    // Multiverse theme must be preserved
+    expect(settings.theme).toBe('translucent-cockpit');
+    expect(settings.accentColor).toBe('#38bdf8');
 
     expect(focus.workDuration).toBe(25);
     expect(focus.breakDuration).toBe(5);
     expect(focus.currentCategory).toBe('Studying');
     expect(focus.volumes.white).toBe(25);
+  });
+
+  it('switching to Flow / Writing preserves active multiverse theme, applies 45m timer, and pink noise', () => {
+    useSettingsStore.setState({ theme: 'neo-brutalist', accentColor: '#ff2e93' });
+    useSettingsStore.getState().setActiveSpace('flow-writing');
+
+    const settings = useSettingsStore.getState();
+    const focus = useFocusStore.getState();
+
+    expect(settings.activeSpaceId).toBe('flow-writing');
+    expect(settings.theme).toBe('neo-brutalist');
+    expect(settings.accentColor).toBe('#ff2e93');
+
+    expect(focus.workDuration).toBe(45);
+    expect(focus.breakDuration).toBe(10);
+    expect(focus.currentCategory).toBe('Writing');
+    expect(focus.volumes.pink).toBe(35);
   });
 
   it('allows creating a custom focus space', () => {
@@ -81,9 +102,12 @@ describe('Focus Spaces System', () => {
     expect(custom?.workDuration).toBe(90);
     expect(custom?.isBuiltIn).toBe(false);
 
-    // Can activate custom space
+    // Can activate custom space while preserving active theme
+    useSettingsStore.setState({ theme: '8bit-arcade', accentColor: '#ec4899' });
     useSettingsStore.getState().setActiveSpace(custom!.id);
     expect(useSettingsStore.getState().activeSpaceId).toBe(custom!.id);
+    expect(useSettingsStore.getState().theme).toBe('8bit-arcade');
+    expect(useSettingsStore.getState().accentColor).toBe('#ec4899');
     expect(useFocusStore.getState().workDuration).toBe(90);
   });
 

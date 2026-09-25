@@ -31,8 +31,8 @@ export interface FocusSpace {
   workDuration: number; // in minutes
   breakDuration: number;
   longBreakDuration: number;
-  theme: AppTheme;
-  accentColor: string;
+  theme?: AppTheme;
+  accentColor?: string;
   noises: {
     white: number;
     brown: number;
@@ -47,12 +47,10 @@ export const DEFAULT_FOCUS_SPACES: FocusSpace[] = [
     id: 'deep-code',
     name: 'Deep Code',
     icon: 'code',
-    description: '50m hyperfocus with deep brown noise in dark midnight atmosphere',
+    description: '50m hyperfocus with deep brown noise',
     workDuration: 50,
     breakDuration: 10,
     longBreakDuration: 15,
-    theme: 'midnight',
-    accentColor: '#6366f1',
     noises: { white: 0, brown: 45, pink: 0 },
     category: 'Coding',
     isBuiltIn: true,
@@ -61,12 +59,10 @@ export const DEFAULT_FOCUS_SPACES: FocusSpace[] = [
     id: 'study-sprint',
     name: 'Study Sprint',
     icon: 'study',
-    description: '25m classic Pomodoro with balanced white noise in serene forest theme',
+    description: '25m classic Pomodoro with balanced white noise',
     workDuration: 25,
     breakDuration: 5,
     longBreakDuration: 15,
-    theme: 'forest',
-    accentColor: '#10b981',
     noises: { white: 25, brown: 0, pink: 0 },
     category: 'Studying',
     isBuiltIn: true,
@@ -75,12 +71,10 @@ export const DEFAULT_FOCUS_SPACES: FocusSpace[] = [
     id: 'flow-writing',
     name: 'Flow / Writing',
     icon: 'write',
-    description: '45m distraction-free session with soft pink noise in minimalist styling',
+    description: '45m distraction-free session with soft pink noise',
     workDuration: 45,
     breakDuration: 10,
     longBreakDuration: 20,
-    theme: 'minimalist',
-    accentColor: '#ec4899',
     noises: { white: 0, brown: 0, pink: 35 },
     category: 'Writing',
     isBuiltIn: true,
@@ -130,6 +124,7 @@ interface SettingsState {
   dashboardWidgets: DashboardWidgetConfig[];
   toggleWidgetVisibility: (id: DashboardWidgetId) => void;
   moveWidgetOrder: (id: DashboardWidgetId, direction: 'up' | 'down') => void;
+  reorderWidgets: (activeId: DashboardWidgetId, overId: DashboardWidgetId) => void;
   resetDashboardWidgets: () => void;
 
   setTheme: (theme: AppTheme) => void;
@@ -180,26 +175,39 @@ export const useSettingsStore = create<SettingsState>()(
           const targetIndex = direction === 'up' ? index - 1 : index + 1;
           if (targetIndex < 0 || targetIndex >= sorted.length) return state;
 
-          // Swap orders
-          const temp = sorted[index].order;
-          sorted[index].order = sorted[targetIndex].order;
-          sorted[targetIndex].order = temp;
+          const reordered = [...sorted];
+          const [moved] = reordered.splice(index, 1);
+          reordered.splice(targetIndex, 0, moved);
 
-          return { dashboardWidgets: [...sorted] };
+          const updated = reordered.map((w, idx) => ({ ...w, order: idx }));
+          return { dashboardWidgets: updated };
+        }),
+
+      reorderWidgets: (activeId, overId) =>
+        set((state) => {
+          const sorted = [...state.dashboardWidgets].sort((a, b) => a.order - b.order);
+          const oldIndex = sorted.findIndex((w) => w.id === activeId);
+          const newIndex = sorted.findIndex((w) => w.id === overId);
+          if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return state;
+
+          const reordered = [...sorted];
+          const [moved] = reordered.splice(oldIndex, 1);
+          reordered.splice(newIndex, 0, moved);
+
+          const updated = reordered.map((w, idx) => ({ ...w, order: idx }));
+          return { dashboardWidgets: updated };
         }),
 
       resetDashboardWidgets: () =>
-        set({ dashboardWidgets: DEFAULT_DASHBOARD_WIDGETS }),
+        set({ dashboardWidgets: DEFAULT_DASHBOARD_WIDGETS.map((w) => ({ ...w })) }),
 
       setActiveSpace: (id: string) => {
         const space = get().focusSpaces.find((s) => s.id === id);
         if (!space) return;
 
-        // 1. Update settings
+        // 1. Update settings (Preserve user's active Multiverse theme and accent color)
         set({
           activeSpaceId: id,
-          theme: space.theme,
-          accentColor: space.accentColor,
           defaultPomodoroLength: space.workDuration,
           defaultShortBreakLength: space.breakDuration,
           defaultLongBreakLength: space.longBreakDuration,

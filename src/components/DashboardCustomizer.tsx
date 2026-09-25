@@ -1,14 +1,15 @@
 import React from 'react';
 import { useSettingsStore, type DashboardWidgetId } from '../store/useSettingsStore';
 import { GlassPanel } from './GlassPanel';
-import { Sliders, Eye, EyeOff, ArrowUp, ArrowDown, RotateCcw, X, Check } from 'lucide-react';
+import { Sliders, Eye, EyeOff, ArrowUp, ArrowDown, RotateCcw, X, Check, Move } from 'lucide-react';
 
 interface DashboardCustomizerProps {
   isOpen: boolean;
   onClose: () => void;
+  onEnterEditMode?: () => void;
 }
 
-export const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClose }) => {
+export const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClose, onEnterEditMode }) => {
   const { dashboardWidgets, toggleWidgetVisibility, moveWidgetOrder, resetDashboardWidgets } = useSettingsStore();
 
   if (!isOpen) return null;
@@ -114,14 +115,29 @@ export const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen
           </div>
 
           {/* Footer Controls */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid var(--glass-border)' }}>
-            <button
-              onClick={resetDashboardWidgets}
-              className="glass-button"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
-            >
-              <RotateCcw size={14} /> Reset to Default
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', paddingTop: '8px', borderTop: '1px solid var(--glass-border)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={resetDashboardWidgets}
+                className="glass-button"
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
+              >
+                <RotateCcw size={14} /> Reset
+              </button>
+              {onEnterEditMode && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onEnterEditMode();
+                  }}
+                  className="glass-button"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
+                  title="Enable interactive drag and drop on dashboard"
+                >
+                  <Move size={14} /> Drag & Drop Mode
+                </button>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="glass-button primary"

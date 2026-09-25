@@ -6,7 +6,6 @@ node_modules/
 # Build Outputs
 dist/
 dist-ssr/
-dist_electron/
 Builds/
 
 # Tauri / Rust Artifacts

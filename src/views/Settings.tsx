@@ -6,6 +6,7 @@ import React, { useRef, useState } from 'react';
 import { useToast } from '../contexts/ToastContext';
 import { validateBackupData } from '../utils/productivityMath';
 import { THEME_WORLDS, getThemeWorld, renderThemeTelemetry, type ThemeWorldId } from '../utils/multiverseTheme';
+import { toLocalDateString } from '../utils/date';
 
 const Settings = () => {
   const { 
@@ -72,7 +73,7 @@ const Settings = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `productivity-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `productivity-backup-${toLocalDateString()}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

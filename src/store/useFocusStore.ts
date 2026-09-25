@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useActivityStore } from './useActivityStore';
 import { useTaskStore } from './useTaskStore';
+import { toLocalDateString } from '../utils/date';
 
 export type TimerMode = 'work' | 'shortBreak' | 'longBreak';
 
@@ -121,7 +122,7 @@ export const useFocusStore = create<FocusState>()(
         let linkedTaskTitle: string | null = null;
         
         set((state) => {
-          const today = new Date().toISOString().split('T')[0];
+          const today = toLocalDateString();
           const newTotal = state.totalFocusTime + state.workDuration;
           const newLongest = Math.max(state.longestSession, state.workDuration);
           const newDaily = { ...state.dailyFocusHours };

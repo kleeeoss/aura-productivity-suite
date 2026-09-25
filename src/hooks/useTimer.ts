@@ -21,7 +21,7 @@ export const useTimer = () => {
   const endTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let interval: number;
+    let interval: ReturnType<typeof setInterval>;
 
     if (!isActive) {
       endTimeRef.current = null;
